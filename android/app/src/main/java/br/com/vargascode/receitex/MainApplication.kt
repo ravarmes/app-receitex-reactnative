@@ -1,4 +1,4 @@
-package com.frase.me
+package br.com.vargascode.receitex
 
 import android.app.Application
 import com.facebook.react.PackageList
@@ -41,4 +41,4 @@ class MainApplication : Application(), ReactApplication {
       load()
     }
   }
-} 
+}

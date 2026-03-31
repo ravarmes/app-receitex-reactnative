@@ -1,4 +1,4 @@
-package com.frase.me
+package br.com.vargascode.receitex
 
 import android.os.Bundle
 import androidx.core.view.WindowCompat
@@ -19,7 +19,7 @@ class MainActivity : ReactActivity() {
    * Returns the name of the main component registered from JavaScript. This is used to schedule
    * rendering of the component.
    */
-  override fun getMainComponentName(): String = "Frase.me"
+  override fun getMainComponentName(): String = "Receitex"
 
   /**
    * Returns the instance of the [ReactActivityDelegate]. We use [DefaultReactActivityDelegate]

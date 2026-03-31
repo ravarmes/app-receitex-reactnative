@@ -1,11 +1,20 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView, ImageBackground, TouchableOpacity } from 'react-native';
-import { Text, Surface, useTheme, Button, Card } from 'react-native-paper';
+import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { Text, Surface, useTheme, Card } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { usePhrases } from '../context/PhraseContext';
+import { usePrescriptions } from '../context/PrescriptionContext';
 import { useNavigation } from '@react-navigation/native';
+import { RootStackNavigationProp } from '../navigation/types';
 
-const FeatureCard = ({ title, icon, description, onPress, color }) => {
+interface FeatureCardProps {
+  title: string;
+  icon: string;
+  description: string;
+  onPress: () => void;
+  color: string;
+}
+
+const FeatureCard = ({ title, icon, description, onPress, color }: FeatureCardProps) => {
   return (
     <TouchableOpacity onPress={onPress}>
       <Surface style={[styles.featureCard, { borderLeftColor: color }]} elevation={2}>
@@ -23,88 +32,101 @@ const FeatureCard = ({ title, icon, description, onPress, color }) => {
 };
 
 export default function HomeScreen() {
-  const { phrases } = usePhrases();
+  const { prescriptions } = usePrescriptions();
   const theme = useTheme();
-  const navigation = useNavigation();
+  const navigation = useNavigation<RootStackNavigationProp>();
 
-  // Get random motivational phrase if available
-  const randomPhrase = phrases && phrases.length > 0 
-    ? phrases[Math.floor(Math.random() * phrases.length)]
+  // Get latest prescription if available
+  const latestPrescription = prescriptions && prescriptions.length > 0 
+    ? prescriptions[0]
     : null;
 
-  // Get phrase stats
-  const totalPhrases = phrases ? phrases.length : 0;
-  const totalFavorites = phrases ? phrases.filter(p => p.favorite).length : 0;
+  // Get prescription stats
+  const totalPrescriptions = prescriptions ? prescriptions.length : 0;
   
-  // Calculate average rating
-  const avgRating = phrases && phrases.length > 0
-    ? (phrases.reduce((sum, phrase) => sum + phrase.rating, 0) / phrases.length).toFixed(1)
-    : '0.0';
+  // Count unique doctors
+  const uniqueDoctors = prescriptions 
+    ? new Set(prescriptions.map(p => p.doctorName)).size
+    : 0;
+
+  // Count unique patients
+  const uniquePatients = prescriptions
+    ? new Set(prescriptions.map(p => p.patientName)).size
+    : 0;
 
   return (
     <ScrollView style={styles.container}>
       <Surface style={styles.header} elevation={4}>
-        <Text style={styles.headerTitle}>Frases Inspiradoras</Text>
-        <Text style={styles.headerSubtitle}>Seu acervo pessoal de motivação</Text>
+        <Text style={styles.headerTitle}>Receitex</Text>
+        <Text style={styles.headerSubtitle}>Suas receitas médicas organizadas</Text>
       </Surface>
 
-      {randomPhrase && (
-        <Card style={styles.quoteCard}>
-          <Card.Content>
-            <Text style={styles.quoteText}>"{randomPhrase.text}"</Text>
-            <Text style={styles.quoteAuthor}>— {randomPhrase.author}</Text>
-          </Card.Content>
-        </Card>
+      {latestPrescription && (
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => navigation.navigate('DetalheReceita', { prescriptionId: latestPrescription.id })}
+        >
+          <Card style={styles.latestCard}>
+            <Card.Content>
+              <View style={styles.latestHeader}>
+                <Text style={styles.latestLabel}>Última receita</Text>
+                <MaterialCommunityIcons name="chevron-right" size={18} color="#6366f1" />
+              </View>
+              <Text style={styles.latestDoctor}>Dr(a). {latestPrescription.doctorName}</Text>
+              <Text style={styles.latestPatient}>{latestPrescription.patientName} — {latestPrescription.appointmentDate}</Text>
+            </Card.Content>
+          </Card>
+        </TouchableOpacity>
       )}
 
       <View style={styles.statsContainer}>
         <Surface style={styles.statCard} elevation={1}>
-          <MaterialCommunityIcons name="text-box-multiple" size={24} color="#6366f1" />
-          <Text style={styles.statValue}>{totalPhrases}</Text>
-          <Text style={styles.statLabel}>Frases</Text>
+          <MaterialCommunityIcons name="prescription" size={24} color="#6366f1" />
+          <Text style={styles.statValue}>{totalPrescriptions}</Text>
+          <Text style={styles.statLabel}>Receitas</Text>
         </Surface>
         
         <Surface style={styles.statCard} elevation={1}>
-          <MaterialCommunityIcons name="heart" size={24} color="#f43f5e" />
-          <Text style={styles.statValue}>{totalFavorites}</Text>
-          <Text style={styles.statLabel}>Favoritos</Text>
+          <MaterialCommunityIcons name="doctor" size={24} color="#0ea5e9" />
+          <Text style={styles.statValue}>{uniqueDoctors}</Text>
+          <Text style={styles.statLabel}>Médicos</Text>
         </Surface>
-        
+
         <Surface style={styles.statCard} elevation={1}>
-          <MaterialCommunityIcons name="star" size={24} color="#eab308" />
-          <Text style={styles.statValue}>{avgRating}</Text>
-          <Text style={styles.statLabel}>Avaliação</Text>
+          <MaterialCommunityIcons name="account-group" size={24} color="#10b981" />
+          <Text style={styles.statValue}>{uniquePatients}</Text>
+          <Text style={styles.statLabel}>Pacientes</Text>
         </Surface>
       </View>
 
       <Text style={styles.sectionTitle}>O que você deseja fazer?</Text>
       
       <FeatureCard
-        title="Adicionar Nova Frase" 
+        title="Adicionar Nova Receita" 
         icon="plus-circle"
-        description="Cadastre uma nova frase ou citação inspiradora"
+        description="Cadastre uma nova receita médica"
         onPress={() => navigation.navigate('Adicionar')}
         color="#6366f1"
       />
       
       <FeatureCard
-        title="Ver Frases Salvas" 
-        icon="text"
-        description="Acesse seu acervo pessoal de frases motivacionais"
-        onPress={() => navigation.navigate('Frases')}
+        title="Ver Receitas Salvas" 
+        icon="prescription"
+        description="Acesse suas receitas médicas armazenadas"
+        onPress={() => navigation.navigate('Receitas')}
         color="#0ea5e9"
       />
       
       <FeatureCard
         title="Consultar Relatórios" 
         icon="chart-bar"
-        description="Visualize estatísticas e acompanhe suas coleções"
+        description="Visualize estatísticas das suas receitas"
         onPress={() => navigation.navigate('Relatórios')}
         color="#10b981"
       />
 
       <View style={styles.footer}>
-        <Text style={styles.footerText}>Versão 1.0.0</Text>
+        <Text style={styles.footerText}>Receitex v0.1.0</Text>
       </View>
     </ScrollView>
   );
@@ -134,25 +156,36 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 8,
   },
-  quoteCard: {
+  latestCard: {
     margin: 16,
     marginTop: 0,
     backgroundColor: 'white',
     borderRadius: 12,
-    borderLeftWidth: 5,
+    borderLeftWidth: 4,
     borderLeftColor: '#6366f1',
   },
-  quoteText: {
-    fontSize: 18,
-    fontStyle: 'italic',
-    color: '#333',
-    lineHeight: 26,
+  latestHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
   },
-  quoteAuthor: {
-    fontSize: 16,
-    textAlign: 'right',
-    marginTop: 12,
-    color: '#555',
+  latestLabel: {
+    fontSize: 11,
+    color: '#6366f1',
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  latestDoctor: {
+    fontSize: 17,
+    fontWeight: 'bold',
+    color: '#1e293b',
+  },
+  latestPatient: {
+    fontSize: 14,
+    marginTop: 4,
+    color: '#64748b',
   },
   statsContainer: {
     flexDirection: 'row',
@@ -170,23 +203,23 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   statValue: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
     marginTop: 8,
-    color: '#333',
+    color: '#1e293b',
   },
   statLabel: {
-    fontSize: 14,
-    color: '#666',
+    fontSize: 12,
+    color: '#64748b',
     marginTop: 4,
   },
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 18,
+    fontWeight: '700',
     marginHorizontal: 16,
     marginTop: 24,
-    marginBottom: 16,
-    color: '#333',
+    marginBottom: 12,
+    color: '#1e293b',
   },
   featureCard: {
     flexDirection: 'row',
@@ -205,14 +238,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   featureTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1e293b',
   },
   featureDescription: {
-    fontSize: 14,
-    color: '#666',
-    marginTop: 4,
+    fontSize: 13,
+    color: '#64748b',
+    marginTop: 2,
   },
   footer: {
     padding: 24,

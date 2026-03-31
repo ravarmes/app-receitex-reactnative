@@ -1,30 +1,22 @@
-# 📱 Frase.me
+# 📱 Receitex
 
 [![React Native](https://img.shields.io/badge/React%20Native-0.79.1-61DAFB?style=flat-square&logo=react)](https://reactnative.dev/)
 [![Android](https://img.shields.io/badge/Platform-Android-3DDC84?style=flat-square&logo=android)](https://developer.android.com/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
 
-> Seu acervo pessoal de frases motivacionais e inspiradoras
+> Organize e armazene suas receitas médicas com facilidade
 
-Frase.me é um aplicativo React Native que permite salvar, categorizar e avaliar suas frases favoritas. Crie seu próprio acervo pessoal de motivação e inspire-se diariamente.
-
-## 📸 Screenshots
-
-<div align="center">
-  <img src="assets/Frase.me-Tela01-Inicio.png" width="200" alt="Tela Inicial">
-  <img src="assets/Frase.me-Tela02-Adicionar.png" width="200" alt="Adicionar Frase">
-  <img src="assets/Frase.me-Tela03-Frases.png" width="200" alt="Lista de Frases">
-  <img src="assets/Frase.me-Tela04-Relatorios.png" width="200" alt="Relatórios">
-</div>
+Receitex é um aplicativo React Native para organizar e armazenar receitas médicas usando fotos e metadados estruturados. Cadastre receitas, associe médicos, pacientes, categorias de sintomas e consulte tudo rapidamente.
 
 ## ✨ Funcionalidades
 
-- 📝 **Adicionar, editar e excluir** frases motivacionais
-- 🏷️ **Categorizar frases** para melhor organização
-- 👤 **Atribuir autores** às frases
-- ⭐ **Sistema de avaliação** com estrelas
-- ❤️ **Marcar frases como favoritas**
+- 📝 **Adicionar e excluir** receitas médicas
+- 🏷️ **Categorizar sintomas** para melhor organização
+- 👨‍⚕️ **Registrar médicos** e pacientes
+- 📅 **Data da consulta** para cada receita
+- ❤️ **Marcar receitas como favoritas**
 - 📊 **Estatísticas de uso** e relatórios
+- 🔍 **Busca e filtros** por médico, paciente ou categoria
 - 🎨 **Interface moderna** e intuitiva
 - 📱 **Totalmente responsivo**
 
@@ -51,8 +43,8 @@ Frase.me é um aplicativo React Native que permite salvar, categorizar e avaliar
 
 ```bash
 # Clone o repositório
-git clone https://github.com/seu-usuario/frase-me-admob.git
-cd frase-me-admob
+git clone https://github.com/seu-usuario/receitex.git
+cd receitex
 
 # Instale as dependências
 npm install
@@ -79,7 +71,7 @@ npx react-native run-ios
 ### Gerar Chave de Assinatura
 
 ```bash
-keytool -genkeypair -v -storetype PKCS12 -keystore frase-me-key.keystore -alias frase-me-alias -keyalg RSA -keysize 2048 -validity 10000
+keytool -genkeypair -v -storetype PKCS12 -keystore receitex-key.keystore -alias receitex-alias -keyalg RSA -keysize 2048 -validity 10000
 ```
 
 ### Configurar Gradle Properties
@@ -87,8 +79,8 @@ keytool -genkeypair -v -storetype PKCS12 -keystore frase-me-key.keystore -alias 
 Crie um arquivo `android/gradle.properties` com suas credenciais:
 
 ```properties
-MYAPP_UPLOAD_STORE_FILE=frase-me-key.keystore
-MYAPP_UPLOAD_KEY_ALIAS=frase-me-alias
+MYAPP_UPLOAD_STORE_FILE=receitex-key.keystore
+MYAPP_UPLOAD_KEY_ALIAS=receitex-alias
 MYAPP_UPLOAD_STORE_PASSWORD=sua-senha-aqui
 MYAPP_UPLOAD_KEY_PASSWORD=sua-senha-aqui
 ```

@@ -1,5 +1,5 @@
 /**
- * App.tsx - Integração Hello World com Frases + AdMob
+ * App.tsx - Receitex - Organizador de Receitas Médicas
  */
 
 import React, {useEffect} from 'react';
@@ -17,11 +17,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Provider as PaperProvider } from 'react-native-paper';
 
-// Importar componentes do app de frases
-import { PhraseProvider } from './src/context/PhraseContext';
+// Importar componentes do app Receitex
+import { PrescriptionProvider } from './src/context/PrescriptionContext';
 import HomeScreen from './src/screens/HomeScreen';
-import AddPhraseScreen from './src/screens/AddPhraseScreen';
-import PhrasesListScreen from './src/screens/PhrasesListScreen';
+import AddPrescriptionScreen from './src/screens/AddPrescriptionScreen';
+import PrescriptionsListScreen from './src/screens/PrescriptionsListScreen';
+import PrescriptionDetailScreen from './src/screens/PrescriptionDetailScreen';
 import ReportsScreen from './src/screens/ReportsScreen';
 import adConfig from './src/utils/adConfig';
 
@@ -47,7 +48,7 @@ function App(): React.JSX.Element {
       <StatusBar barStyle="dark-content" />
       
       <PaperProvider>
-        <PhraseProvider>
+        <PrescriptionProvider>
           <NavigationContainer>
             <Stack.Navigator
               initialRouteName="Home"
@@ -64,17 +65,27 @@ function App(): React.JSX.Element {
               <Stack.Screen 
                 name="Home" 
                 component={HomeScreen} 
-                options={{ title: 'Frases Inspiradoras' }} 
+                options={{ title: 'Receitex' }} 
               />
               <Stack.Screen 
                 name="Adicionar" 
-                component={AddPhraseScreen} 
-                options={{ title: 'Nova Frase' }} 
+                component={AddPrescriptionScreen} 
+                options={{ title: 'Nova Receita' }} 
               />
               <Stack.Screen 
-                name="Frases" 
-                component={PhrasesListScreen} 
-                options={{ title: 'Suas Frases' }} 
+                name="Receitas" 
+                component={PrescriptionsListScreen} 
+                options={{ title: 'Suas Receitas' }} 
+              />
+              <Stack.Screen 
+                name="DetalheReceita" 
+                component={PrescriptionDetailScreen} 
+                options={{ title: 'Detalhes da Receita' }} 
+              />
+              <Stack.Screen 
+                name="EditarReceita" 
+                component={AddPrescriptionScreen} 
+                options={{ title: 'Editar Receita' }} 
               />
               <Stack.Screen 
                 name="Relatórios" 
@@ -83,7 +94,7 @@ function App(): React.JSX.Element {
               />
             </Stack.Navigator>
           </NavigationContainer>
-        </PhraseProvider>
+        </PrescriptionProvider>
       </PaperProvider>
       
       {/* Banner de anúncio fixo na parte inferior */}

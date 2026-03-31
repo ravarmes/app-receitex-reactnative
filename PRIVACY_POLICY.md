@@ -1,20 +1,20 @@
-# Política de Privacidade - Frase.me
+# Política de Privacidade - Receitex
 
 Data de vigência: 17 de Agosto de 2023
 
 ## Introdução
 
-Obrigado por usar o aplicativo Frase.me. Esta Política de Privacidade destina-se a informá-lo sobre como coletamos, usamos e protegemos suas informações quando você utiliza nosso aplicativo móvel.
+Obrigado por usar o aplicativo Receitex. Esta Política de Privacidade destina-se a informá-lo sobre como coletamos, usamos e protegemos suas informações quando você utiliza nosso aplicativo móvel.
 
 ## Informações que Coletamos
 
 ### Informações fornecidas por você
 
-O aplicativo Frase.me coleta apenas as informações que você fornece voluntariamente ao usar o aplicativo, como:
+O aplicativo Receitex coleta apenas as informações que você fornece voluntariamente ao usar o aplicativo, como:
 
-- Frases que você adiciona
-- Categorias que você cria
-- Avaliações que você atribui às frases
+- Receitas médicas que você adiciona
+- Dados de médicos e pacientes
+- Categorias de sintomas
 - Preferências de favoritos
 
 ### Informações coletadas automaticamente
@@ -31,13 +31,13 @@ Usamos as informações coletadas para:
 
 ## Publicidade
 
-O aplicativo Frase.me utiliza o Google AdMob para exibir anúncios. O AdMob pode coletar e utilizar dados para personalização de anúncios. Para mais informações sobre as práticas de privacidade do Google AdMob, consulte: https://policies.google.com/technologies/ads
+O aplicativo Receitex utiliza o Google AdMob para exibir anúncios. O AdMob pode coletar e utilizar dados para personalização de anúncios. Para mais informações sobre as práticas de privacidade do Google AdMob, consulte: https://policies.google.com/technologies/ads
 
 Você pode optar por desativar a personalização de anúncios nas configurações do seu dispositivo ou através das configurações de anúncios do Google.
 
 ## Armazenamento de Dados
 
-Todas as informações fornecidas por você são armazenadas localmente no seu dispositivo. Não armazenamos suas frases, categorias ou outras informações pessoais em servidores remotos.
+Todas as informações fornecidas por você são armazenadas localmente no seu dispositivo. Não armazenamos suas receitas médicas, dados de pacientes ou outras informações pessoais em servidores remotos.
 
 ## Compartilhamento de Dados
 
@@ -63,5 +63,5 @@ Podemos atualizar nossa Política de Privacidade periodicamente. Notificaremos v
 
 Se você tiver dúvidas ou sugestões sobre nossa Política de Privacidade, entre em contato conosco em:
 
-Email: contato@frase.me
-Website: https://www.frase.me 
+Email: contato@receitex.app
+Website: https://www.receitex.app 

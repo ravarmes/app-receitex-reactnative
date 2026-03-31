@@ -1,8 +1,8 @@
 {
-  "name": "Frase.me",
-  "displayName": "Frase.me",
+  "name": "Receitex",
+  "displayName": "Receitex",
   "react-native-google-mobile-ads": {
-    "android_app_id": "ca-app-pub-8703883002838699~9024854022",
+    "android_app_id": "ca-app-pub-8703883002838699~2265743906",
     "ios_app_id": "ca-app-pub-3940256099942544~1458002511"
   }
 }
