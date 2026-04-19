@@ -84,6 +84,9 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "0.1.0"
+        
+        // Estratégia mandatória para o pacote react-native-iap decidir qual API de loja compilar
+        missingDimensionStrategy 'store', 'play'
     }
     signingConfigs {
         debug {

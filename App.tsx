@@ -25,6 +25,26 @@ import PrescriptionsListScreen from './src/screens/PrescriptionsListScreen';
 import PrescriptionDetailScreen from './src/screens/PrescriptionDetailScreen';
 import ReportsScreen from './src/screens/ReportsScreen';
 import adConfig from './src/utils/adConfig';
+import { IapProvider, useIap } from './src/contexts/IapContext';
+
+// Componente isolado para escutar o Contexto do IAP e esconder o Banner
+const AppBannerAd = () => {
+  const { isAdFree } = useIap();
+  if (isAdFree) return null; // Não renderiza nada se for Premium
+
+  const adUnitId = adConfig.getBannerAdId();
+  return (
+    <View style={styles.adContainer}>
+      <BannerAd
+        unitId={adUnitId}
+        size={BannerAdSize.BANNER}
+        requestOptions={{
+          requestNonPersonalizedAdsOnly: true,
+        }}
+      />
+    </View>
+  );
+};
 
 // Configurar o navegador
 const Stack = createNativeStackNavigator();
@@ -40,16 +60,14 @@ function App(): React.JSX.Element {
       });
   }, []);
 
-  // ID do banner do adConfig
-  const adUnitId = adConfig.getBannerAdId();
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
       
       <PaperProvider>
         <PrescriptionProvider>
-          <NavigationContainer>
+          <IapProvider>
+            <NavigationContainer>
             <Stack.Navigator
               initialRouteName="Home"
               screenOptions={{
@@ -93,20 +111,14 @@ function App(): React.JSX.Element {
                 options={{ title: 'Relatórios' }} 
               />
             </Stack.Navigator>
-          </NavigationContainer>
+            </NavigationContainer>
+            
+            {/* Banner de anúncio passível de bloqueio nativo */}
+            <AppBannerAd />
+            
+          </IapProvider>
         </PrescriptionProvider>
       </PaperProvider>
-      
-      {/* Banner de anúncio fixo na parte inferior */}
-      <View style={styles.adContainer}>
-        <BannerAd
-          unitId={adUnitId}
-          size={BannerAdSize.BANNER}
-          requestOptions={{
-            requestNonPersonalizedAdsOnly: true,
-          }}
-        />
-      </View>
     </SafeAreaView>
   );
 }

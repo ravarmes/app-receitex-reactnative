@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Text, Surface, useTheme, Card } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { usePrescriptions } from '../context/PrescriptionContext';
 import { useNavigation } from '@react-navigation/native';
 import { RootStackNavigationProp } from '../navigation/types';
+import { useIap } from '../contexts/IapContext';
 
 interface FeatureCardProps {
   title: string;
@@ -35,6 +36,7 @@ export default function HomeScreen() {
   const { prescriptions } = usePrescriptions();
   const theme = useTheme();
   const navigation = useNavigation<RootStackNavigationProp>();
+  const { isAdFree, isLoading, purchaseRemoveAds } = useIap();
 
   // Get latest prescription if available
   const latestPrescription = prescriptions && prescriptions.length > 0 
@@ -98,6 +100,20 @@ export default function HomeScreen() {
           <Text style={styles.statLabel}>Pacientes</Text>
         </Surface>
       </View>
+
+      {!isAdFree && (
+        <TouchableOpacity 
+          style={styles.premiumCard} 
+          onPress={purchaseRemoveAds}
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <ActivityIndicator color="#000" />
+          ) : (
+            <Text style={styles.premiumText}>👑 Remover Anúncios para Sempre</Text>
+          )}
+        </TouchableOpacity>
+      )}
 
       <Text style={styles.sectionTitle}>O que você deseja fazer?</Text>
       
@@ -163,6 +179,25 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderLeftWidth: 4,
     borderLeftColor: '#6366f1',
+  },
+  premiumCard: {
+    backgroundColor: '#FFD700', // Dourado chamativo
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    borderRadius: 12,
+    marginHorizontal: 16,
+    marginBottom: 8,
+    alignItems: 'center',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOpacity: 0.15,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 2 },
+  },
+  premiumText: {
+    color: '#000',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
   latestHeader: {
     flexDirection: 'row',
