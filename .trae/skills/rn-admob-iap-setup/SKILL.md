@@ -33,6 +33,15 @@ Siga rigorosamente as etapas abaixo ao iniciar um novo projeto com essa estrutur
 - Instrua o usuário a colar os **IDs Reais do AdMob** (App ID, Banner ID, Interstitial ID) nesse arquivo.
 - O App ID também deve ser inserido no `AndroidManifest.xml` (na tag `<meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" ... />`) e no `app.json`.
 
+### 1.4 Resolução de Problemas Conhecidos (Build Android no Windows)
+- **Problema**: Ao compilar o projeto no Windows (ex: ao rodar `:app:installDebug` ou gerar o AAB), pode ocorrer um erro fatal de C++ relacionado ao `Ninja` ou `CMake` (`GetOverlappedResult`), frequentemente associado ao pacote `react-native-screens` e caminhos muito longos.
+- **Solução**: Forçar o uso da versão do Android NDK `26.1.10909125` (que é estável para esse cenário). 
+- **Como aplicar**: No arquivo `android/build.gradle`, dentro do bloco `ext`, defina a variável:
+  ```gradle
+  ndkVersion = "26.1.10909125"
+  ```
+- Após a alteração, sempre limpe o cache do gradle (`./gradlew clean`).
+
 ---
 
 ## 2. Ações Externas: AdMob e Google Play Console
@@ -54,7 +63,20 @@ O usuário precisa:
 
 ---
 
-## 3. Gerando a Versão de Teste Interno
+## 3. Versionamento e Geração de Pacotes (AAB)
+
+Antes de gerar qualquer pacote, é crucial seguir o padrão correto no arquivo `android/app/build.gradle`:
+
+### 3.1 Padrão de Versionamento (Play Console)
+- **`versionName`**: Versão pública (ex: `1.0.0`). Só altera quando há novas funcionalidades visíveis.
+- **`versionCode`**: Número inteiro da build (ex: `1`, `2`, `3`). **Obrigatório incrementar** a cada novo `.aab` gerado.
+
+**Diretrizes por fase:**
+- **Teste Interno**: Mantenha o `versionName` atual (ex: `0.1.0`) e incremente o `versionCode`. O nome da versão no Console deve ser descritivo para você (ex: `0.1.0 - Teste IAP e AdMob`).
+- **Teste Fechado**: Quando estável, atualize o `versionName` (ex: `1.0.0-rc` ou `1.0.0`) e incremente o `versionCode`.
+- **Produção**: O `versionName` deve ser a versão final limpa (ex: `1.0.0`). Nome da versão no console: `1.0.0 - Lançamento Oficial`.
+
+### 3.2 Gerando a Versão de Teste Interno
 
 Para validar a compra de `remove_ads`, é **obrigatório** gerar um pacote assinado (AAB) e disponibilizá-lo via Teste Interno na Play Store.
 
