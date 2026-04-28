@@ -14,7 +14,7 @@ import {
 } from 'react-native-iap';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export const REMOVE_ADS_SKU = 'produto_remover_anuncios'; // O SKU deve bater com o Google Play Console
+export const REMOVE_ADS_SKU = 'remove_ads';
 const IAP_STORAGE_KEY = '@is_ad_free';
 
 interface IapContextProps {

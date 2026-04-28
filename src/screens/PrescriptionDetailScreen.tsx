@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { View, StyleSheet, ScrollView, Alert, Image } from 'react-native';
 import { Text, Surface, Divider, Chip, Button } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -7,19 +7,26 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { RootStackNavigationProp } from '../navigation/types';
 import { InterstitialAd, AdEventType } from 'react-native-google-mobile-ads';
 import adConfig from '../utils/adConfig';
+import { useIap } from '../contexts/IapContext';
 
 export default function PrescriptionDetailScreen() {
   const route = useRoute();
   const navigation = useNavigation<RootStackNavigationProp>();
   const { getPrescriptionById, deletePrescription } = usePrescriptions();
+  const { isAdFree } = useIap();
   const [interstitialLoaded, setInterstitialLoaded] = useState(false);
-  const [interstitial] = useState(() =>
-    InterstitialAd.createForAdRequest(adConfig.getInterstitialAdId(), {
+  const interstitial = useMemo(() => {
+    if (isAdFree) return null;
+    return InterstitialAd.createForAdRequest(adConfig.getInterstitialAdId(), {
       requestNonPersonalizedAdsOnly: true,
-    }),
-  );
+    });
+  }, [isAdFree]);
 
   useEffect(() => {
+    if (!interstitial) {
+      setInterstitialLoaded(false);
+      return;
+    }
     const unsubLoad = interstitial.addAdEventListener(AdEventType.LOADED, () => {
       setInterstitialLoaded(true);
     });
@@ -60,7 +67,7 @@ export default function PrescriptionDetailScreen() {
           style: 'destructive',
           onPress: async () => {
             await deletePrescription(prescription.id);
-            if (interstitialLoaded) {
+            if (!isAdFree && interstitial && interstitialLoaded) {
               interstitial.show();
             }
             navigation.goBack();

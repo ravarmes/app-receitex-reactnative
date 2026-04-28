@@ -7,10 +7,12 @@ import { useNavigation } from '@react-navigation/native';
 import { RootStackNavigationProp } from '../navigation/types';
 import { BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
 import adConfig from '../utils/adConfig';
+import { useIap } from '../contexts/IapContext';
 
 export default function PrescriptionsListScreen() {
   const { prescriptions, deletePrescription } = usePrescriptions();
   const navigation = useNavigation<RootStackNavigationProp>();
+  const { isAdFree } = useIap();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null);
   const [selectedPatient, setSelectedPatient] = useState<string | null>(null);
@@ -352,7 +354,7 @@ export default function PrescriptionsListScreen() {
         ListHeaderComponent={renderListHeader}
         contentContainerStyle={styles.listContainer}
         ListFooterComponent={
-          filteredPrescriptions.length > 0 ? (
+          !isAdFree && filteredPrescriptions.length > 0 ? (
             <View style={styles.listAdContainer}>
               <BannerAd
                 unitId={adConfig.getBannerAdId()}

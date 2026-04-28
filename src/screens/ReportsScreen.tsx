@@ -7,6 +7,7 @@ import { RootStackNavigationProp } from '../navigation/types';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
 import adConfig from '../utils/adConfig';
+import { useIap } from '../contexts/IapContext';
 
 // Componente para representar um gráfico de barras simples
 const BarChart = ({ data, maxValue }: { data: [string, number][]; maxValue: number }) => {
@@ -43,6 +44,7 @@ const getColorForIndex = (index: number): string => {
 export default function ReportsScreen() {
   const { prescriptions } = usePrescriptions();
   const navigation = useNavigation<RootStackNavigationProp>();
+  const { isAdFree } = useIap();
 
   const stats = useMemo(() => {
     const total = prescriptions.length;
@@ -203,15 +205,17 @@ export default function ReportsScreen() {
       </Surface>
 
       {/* Anúncio nativo entre seções */}
-      <View style={styles.nativeAdContainer}>
-        <BannerAd
-          unitId={adConfig.getBannerAdId()}
-          size={BannerAdSize.MEDIUM_RECTANGLE}
-          requestOptions={{
-            requestNonPersonalizedAdsOnly: true,
-          }}
-        />
-      </View>
+      {!isAdFree && (
+        <View style={styles.nativeAdContainer}>
+          <BannerAd
+            unitId={adConfig.getBannerAdId()}
+            size={BannerAdSize.MEDIUM_RECTANGLE}
+            requestOptions={{
+              requestNonPersonalizedAdsOnly: true,
+            }}
+          />
+        </View>
+      )}
 
       {/* Top médicos */}
       <Surface style={styles.card} elevation={2}>
