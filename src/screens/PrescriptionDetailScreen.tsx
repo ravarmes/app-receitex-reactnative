@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { View, StyleSheet, ScrollView, Alert, Image } from 'react-native';
+import { View, StyleSheet, ScrollView, Alert, Image, Modal, TouchableOpacity, StatusBar } from 'react-native';
 import { Text, Surface, Divider, Chip, Button } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { usePrescriptions } from '../context/PrescriptionContext';
@@ -15,6 +15,7 @@ export default function PrescriptionDetailScreen() {
   const { getPrescriptionById, deletePrescription } = usePrescriptions();
   const { isAdFree } = useIap();
   const [interstitialLoaded, setInterstitialLoaded] = useState(false);
+  const [imageModalVisible, setImageModalVisible] = useState(false);
   const interstitial = useMemo(() => {
     if (isAdFree) return null;
     return InterstitialAd.createForAdRequest(adConfig.getInterstitialAdId(), {
@@ -90,13 +91,42 @@ export default function PrescriptionDetailScreen() {
     <ScrollView style={styles.container}>
       {/* Photo section */}
       {prescription.photoURI ? (
-        <Image source={{ uri: prescription.photoURI }} style={styles.photo} resizeMode="cover" />
+        <TouchableOpacity onPress={() => setImageModalVisible(true)} activeOpacity={0.9}>
+          <Image source={{ uri: prescription.photoURI }} style={styles.photo} resizeMode="cover" />
+          <View style={styles.photoHint}>
+            <MaterialCommunityIcons name="magnify-plus-outline" size={18} color="white" />
+          </View>
+        </TouchableOpacity>
       ) : (
         <View style={styles.noPhotoContainer}>
           <MaterialCommunityIcons name="image-outline" size={32} color="#cbd5e1" />
           <Text style={styles.noPhotoText}>Nenhuma foto anexada</Text>
         </View>
       )}
+
+      {/* Full-screen image modal */}
+      <Modal
+        visible={imageModalVisible}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setImageModalVisible(false)}
+        statusBarTranslucent={true}
+      >
+        <View style={styles.modalOverlay}>
+          <StatusBar backgroundColor="rgba(0,0,0,0.95)" barStyle="light-content" />
+          <TouchableOpacity
+            style={styles.modalCloseButton}
+            onPress={() => setImageModalVisible(false)}
+          >
+            <MaterialCommunityIcons name="close" size={28} color="white" />
+          </TouchableOpacity>
+          <Image
+            source={{ uri: prescription.photoURI! }}
+            style={styles.fullScreenImage}
+            resizeMode="contain"
+          />
+        </View>
+      </Modal>
 
       {/* Main info card */}
       <Surface style={styles.card} elevation={2}>
@@ -212,6 +242,33 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 220,
     backgroundColor: '#e2e8f0',
+  },
+  photoHint: {
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+    backgroundColor: 'rgba(0,0,0,0.45)',
+    borderRadius: 16,
+    padding: 6,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.95)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalCloseButton: {
+    position: 'absolute',
+    top: 48,
+    right: 16,
+    zIndex: 10,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    borderRadius: 20,
+    padding: 6,
+  },
+  fullScreenImage: {
+    width: '100%',
+    height: '80%',
   },
   noPhotoContainer: {
     width: '100%',

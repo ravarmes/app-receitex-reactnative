@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, TextInput, Platform, Keyboard, KeyboardAvoidingView, Alert, Image, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, ScrollView, TextInput, Platform, Keyboard, KeyboardAvoidingView, Alert, Image, TouchableOpacity, Modal, PermissionsAndroid } from 'react-native';
 import { Button, Text, Surface, Chip, Card, Divider } from 'react-native-paper';
 import { usePrescriptions } from '../context/PrescriptionContext';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -22,6 +22,30 @@ export default function AddPrescriptionScreen() {
   const [appointmentDate, setAppointmentDate] = useState('');
   const [photoURI, setPhotoURI] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
+  // Date picker state – default to today
+  const today = new Date();
+  const [pickerDay, setPickerDay] = useState(today.getDate());
+  const [pickerMonth, setPickerMonth] = useState(today.getMonth() + 1);
+  const [pickerYear, setPickerYear] = useState(today.getFullYear());
+
+  const days = Array.from({ length: 31 }, (_, i) => i + 1);
+  const months = [
+    { label: 'Janeiro', value: 1 },
+    { label: 'Fevereiro', value: 2 },
+    { label: 'Março', value: 3 },
+    { label: 'Abril', value: 4 },
+    { label: 'Maio', value: 5 },
+    { label: 'Junho', value: 6 },
+    { label: 'Julho', value: 7 },
+    { label: 'Agosto', value: 8 },
+    { label: 'Setembro', value: 9 },
+    { label: 'Outubro', value: 10 },
+    { label: 'Novembro', value: 11 },
+    { label: 'Dezembro', value: 12 },
+  ];
+  const years = Array.from({ length: 20 }, (_, i) => today.getFullYear() - 5 + i);
 
   // Populate fields when editing
   useEffect(() => {
@@ -100,6 +124,64 @@ export default function AddPrescriptionScreen() {
     }
   };
 
+  const handleTakePhoto = async () => {
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.CAMERA,
+          {
+            title: 'Permissão de Câmera',
+            message: 'O aplicativo precisa acessar sua câmera para tirar fotos da receita.',
+            buttonNeutral: 'Perguntar depois',
+            buttonNegative: 'Cancelar',
+            buttonPositive: 'Permitir',
+          },
+        );
+        if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+          Alert.alert(
+            'Permissão negada',
+            'Sem permissão de câmera não é possível tirar fotos. Habilite nas configurações do dispositivo.',
+          );
+          return;
+        }
+      } catch (err) {
+        console.warn('Erro ao solicitar permissão de câmera:', err);
+        return;
+      }
+    }
+
+    launchCamera(
+      {
+        mediaType: 'photo',
+        quality: 0.8,
+        saveToPhotos: false,
+        includeBase64: false,
+        maxHeight: 2000,
+        maxWidth: 2000,
+      },
+      (response: ImagePickerResponse) => {
+        if (response.didCancel) return;
+        if (response.errorCode) {
+          Alert.alert(
+            'Erro ao abrir câmera',
+            response.errorMessage ||
+              'Não foi possível abrir a câmera. Verifique as permissões nas configurações do dispositivo.',
+          );
+          return;
+        }
+        const uri = response.assets?.[0]?.uri;
+        if (uri) setPhotoURI(uri);
+      },
+    );
+  };
+
+  const confirmDatePicker = () => {
+    const dd = String(pickerDay).padStart(2, '0');
+    const mm = String(pickerMonth).padStart(2, '0');
+    setAppointmentDate(`${dd}/${mm}/${pickerYear}`);
+    setShowDatePicker(false);
+  };
+
   const renderCategoryChips = () => {
     if (!symptomCategories) return null;
     
@@ -157,16 +239,7 @@ export default function AddPrescriptionScreen() {
             <View style={styles.photoButtonsContainer}>
               <TouchableOpacity
                 style={styles.photoButton}
-                onPress={() => {
-                  launchCamera(
-                    { mediaType: 'photo', quality: 0.8, saveToPhotos: false },
-                    (response: ImagePickerResponse) => {
-                      if (response.didCancel || response.errorCode) return;
-                      const uri = response.assets?.[0]?.uri;
-                      if (uri) setPhotoURI(uri);
-                    },
-                  );
-                }}
+                onPress={handleTakePhoto}
               >
                 <MaterialCommunityIcons name="camera" size={28} color="#6366f1" />
                 <Text style={styles.photoButtonText}>Tirar Foto</Text>
@@ -226,19 +299,117 @@ export default function AddPrescriptionScreen() {
 
           <View style={styles.inputContainer}>
             <Text style={styles.inputLabel}>Data da Consulta</Text>
-            <View style={styles.inputWithIcon}>
+            <TouchableOpacity
+              style={styles.inputWithIcon}
+              onPress={() => setShowDatePicker(true)}
+              activeOpacity={0.7}
+            >
               <MaterialCommunityIcons name="calendar" size={24} color="#6366f1" style={styles.inputIcon} />
-              <TextInput
-                style={[styles.nativeInput, styles.inputWithIconField]}
-                placeholder="DD/MM/AAAA"
-                onChangeText={setAppointmentDate}
-                value={appointmentDate}
-                keyboardType="default"
-                textContentType="none"
-                autoCorrect={false}
-              />
-            </View>
+              <Text style={[
+                styles.datePickerText,
+                !appointmentDate && styles.datePickerPlaceholder,
+              ]}>
+                {appointmentDate || 'DD/MM/AAAA'}
+              </Text>
+              <MaterialCommunityIcons name="chevron-down" size={20} color="#94a3b8" style={{ paddingRight: 10 }} />
+            </TouchableOpacity>
           </View>
+
+          {/* Date Picker Modal */}
+          <Modal
+            visible={showDatePicker}
+            transparent={true}
+            animationType="slide"
+            onRequestClose={() => setShowDatePicker(false)}
+          >
+            <TouchableOpacity
+              style={styles.dateModalBackdrop}
+              activeOpacity={1}
+              onPress={() => setShowDatePicker(false)}
+            />
+            <View style={styles.dateModalContainer}>
+              <View style={styles.dateModalHeader}>
+                <TouchableOpacity onPress={() => setShowDatePicker(false)}>
+                  <Text style={styles.dateModalCancel}>Cancelar</Text>
+                </TouchableOpacity>
+                <Text style={styles.dateModalTitle}>Selecionar Data</Text>
+                <TouchableOpacity onPress={confirmDatePicker}>
+                  <Text style={styles.dateModalConfirm}>Confirmar</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.datePickerColumns}>
+                {/* Day column */}
+                <View style={styles.datePickerColumn}>
+                  <Text style={styles.datePickerColumnLabel}>Dia</Text>
+                  <ScrollView showsVerticalScrollIndicator={false} style={styles.datePickerScroll}>
+                    {days.map(d => (
+                      <TouchableOpacity
+                        key={d}
+                        style={[
+                          styles.datePickerItem,
+                          pickerDay === d && styles.datePickerItemSelected,
+                        ]}
+                        onPress={() => setPickerDay(d)}
+                      >
+                        <Text style={[
+                          styles.datePickerItemText,
+                          pickerDay === d && styles.datePickerItemTextSelected,
+                        ]}>
+                          {String(d).padStart(2, '0')}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </ScrollView>
+                </View>
+                {/* Month column */}
+                <View style={[styles.datePickerColumn, { flex: 2 }]}>
+                  <Text style={styles.datePickerColumnLabel}>Mês</Text>
+                  <ScrollView showsVerticalScrollIndicator={false} style={styles.datePickerScroll}>
+                    {months.map(m => (
+                      <TouchableOpacity
+                        key={m.value}
+                        style={[
+                          styles.datePickerItem,
+                          pickerMonth === m.value && styles.datePickerItemSelected,
+                        ]}
+                        onPress={() => setPickerMonth(m.value)}
+                      >
+                        <Text style={[
+                          styles.datePickerItemText,
+                          pickerMonth === m.value && styles.datePickerItemTextSelected,
+                        ]}>
+                          {m.label}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </ScrollView>
+                </View>
+                {/* Year column */}
+                <View style={styles.datePickerColumn}>
+                  <Text style={styles.datePickerColumnLabel}>Ano</Text>
+                  <ScrollView showsVerticalScrollIndicator={false} style={styles.datePickerScroll}>
+                    {years.map(y => (
+                      <TouchableOpacity
+                        key={y}
+                        style={[
+                          styles.datePickerItem,
+                          pickerYear === y && styles.datePickerItemSelected,
+                        ]}
+                        onPress={() => setPickerYear(y)}
+                      >
+                        <Text style={[
+                          styles.datePickerItemText,
+                          pickerYear === y && styles.datePickerItemTextSelected,
+                        ]}>
+                          {y}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </ScrollView>
+                </View>
+              </View>
+            </View>
+          </Modal>
 
           <View style={styles.inputContainer}>
             <Text style={styles.inputLabel}>Descrição dos Sintomas</Text>
@@ -462,5 +633,89 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#6366f1',
     fontWeight: '600',
+  },
+  // Date picker styles
+  datePickerText: {
+    flex: 1,
+    fontSize: 15,
+    color: '#1e293b',
+    paddingVertical: 12,
+    paddingHorizontal: 4,
+  },
+  datePickerPlaceholder: {
+    color: '#94a3b8',
+  },
+  dateModalBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+  },
+  dateModalContainer: {
+    backgroundColor: 'white',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingBottom: 30,
+    maxHeight: 420,
+  },
+  dateModalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e2e8f0',
+  },
+  dateModalTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1e293b',
+  },
+  dateModalCancel: {
+    fontSize: 15,
+    color: '#64748b',
+  },
+  dateModalConfirm: {
+    fontSize: 15,
+    color: '#6366f1',
+    fontWeight: '700',
+  },
+  datePickerColumns: {
+    flexDirection: 'row',
+    height: 280,
+    paddingHorizontal: 8,
+  },
+  datePickerColumn: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  datePickerColumnLabel: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#94a3b8',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    paddingVertical: 8,
+  },
+  datePickerScroll: {
+    width: '100%',
+  },
+  datePickerItem: {
+    paddingVertical: 10,
+    paddingHorizontal: 8,
+    borderRadius: 8,
+    marginVertical: 2,
+    marginHorizontal: 4,
+    alignItems: 'center',
+  },
+  datePickerItemSelected: {
+    backgroundColor: '#e0e7ff',
+  },
+  datePickerItemText: {
+    fontSize: 15,
+    color: '#374151',
+  },
+  datePickerItemTextSelected: {
+    color: '#4f46e5',
+    fontWeight: '700',
   },
 });
