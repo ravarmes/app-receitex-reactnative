@@ -129,7 +129,7 @@ export default function PrescriptionsListScreen() {
               onClose={() => setSelectedDoctor(null)}
               style={styles.activeFilterChip}
               textStyle={styles.activeFilterChipText}
-              icon={({size}) => <MaterialCommunityIcons name="doctor" size={size} color="#6366f1" />}
+              icon={({size}) => <MaterialCommunityIcons name="doctor" size={size} color="#0E7C78" />}
             >
               {selectedDoctor}
             </Chip>
@@ -139,7 +139,7 @@ export default function PrescriptionsListScreen() {
               onClose={() => setSelectedPatient(null)}
               style={styles.activeFilterChip}
               textStyle={styles.activeFilterChipText}
-              icon={({size}) => <MaterialCommunityIcons name="account" size={size} color="#0ea5e9" />}
+              icon={({size}) => <MaterialCommunityIcons name="account" size={size} color="#1FA899" />}
             >
               {selectedPatient}
             </Chip>
@@ -149,7 +149,7 @@ export default function PrescriptionsListScreen() {
               onClose={() => setSelectedCategory(null)}
               style={styles.activeFilterChip}
               textStyle={styles.activeFilterChipText}
-              icon={({size}) => <MaterialCommunityIcons name="tag" size={size} color="#10b981" />}
+              icon={({size}) => <MaterialCommunityIcons name="tag" size={size} color="#3FA796" />}
             >
               {selectedCategory}
             </Chip>
@@ -236,16 +236,16 @@ export default function PrescriptionsListScreen() {
 
   const renderItem = ({ item: prescription }: { item: Prescription }) => {
     const isExpanded = expandedCardId === prescription.id;
-    
+
     return (
-      <Card 
-        style={styles.card} 
+      <Card
+        style={styles.card}
         onPress={() => navigation.navigate('DetalheReceita', { prescriptionId: prescription.id })}
         onLongPress={() => toggleExpand(prescription.id)}
       >
         <Card.Content>
           <View style={styles.prescriptionHeader}>
-            <MaterialCommunityIcons name="doctor" size={20} color="#6366f1" />
+            <MaterialCommunityIcons name="doctor" size={20} color="#0E7C78" />
             <Text variant="titleMedium" style={styles.doctorName}>
               Dr(a). {prescription.doctorName}
             </Text>
@@ -274,9 +274,9 @@ export default function PrescriptionsListScreen() {
               <Divider style={styles.divider} />
               <View style={styles.categoriesContainer}>
                 {prescription.symptomCategories.map((category, index) => (
-                  <Chip 
-                    key={index} 
-                    style={styles.categoryChip} 
+                  <Chip
+                    key={index}
+                    style={styles.categoryChip}
                     textStyle={styles.categoryChipText}
                     onPress={() => {
                       setSelectedCategory(category);
@@ -301,10 +301,10 @@ export default function PrescriptionsListScreen() {
             <MaterialCommunityIcons
               name="pencil-outline"
               size={24}
-              color="#6366f1"
+              color="#0E7C78"
             />
           </TouchableOpacity>
-          
+
           <TouchableOpacity
             onPress={(e) => {
               e.stopPropagation();
@@ -316,8 +316,8 @@ export default function PrescriptionsListScreen() {
                     text: "Cancelar",
                     style: "cancel"
                   },
-                  { 
-                    text: "Excluir", 
+                  {
+                    text: "Excluir",
                     onPress: () => deletePrescription(prescription.id),
                     style: "destructive"
                   }
@@ -332,7 +332,7 @@ export default function PrescriptionsListScreen() {
               color="#666"
             />
           </TouchableOpacity>
-          
+
           <View style={styles.expandIndicator}>
             <MaterialCommunityIcons
               name={isExpanded ? 'chevron-up' : 'chevron-down'}
@@ -381,7 +381,7 @@ export default function PrescriptionsListScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f7fa',
+    backgroundColor: '#F5F7F7',
   },
   searchBarContainer: {
     margin: 16,
@@ -408,7 +408,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   selectedChip: {
-    backgroundColor: '#6366f1',
+    backgroundColor: '#0E7C78',
   },
   chipText: {
     color: '#4b5563',
@@ -420,10 +420,10 @@ const styles = StyleSheet.create({
     marginTop: 48,
   },
   selectedMenuItem: {
-    backgroundColor: '#e0e7ff',
+    backgroundColor: '#DDEEED',
   },
   selectedMenuItemText: {
-    color: '#4338ca',
+    color: '#075454',
     fontWeight: 'bold',
   },
   dateInputContainer: {
@@ -452,10 +452,10 @@ const styles = StyleSheet.create({
   },
   activeFilterChip: {
     marginRight: 8,
-    backgroundColor: '#e0e7ff',
+    backgroundColor: '#DDEEED',
   },
   activeFilterChipText: {
-    color: '#4338ca',
+    color: '#075454',
     fontSize: 12,
   },
   clearAllButton: {
@@ -463,7 +463,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   clearAllText: {
-    color: '#6366f1',
+    color: '#0E7C78',
     fontWeight: 'bold',
     fontSize: 13,
   },
@@ -535,10 +535,10 @@ const styles = StyleSheet.create({
   categoryChip: {
     marginRight: 8,
     marginBottom: 8,
-    backgroundColor: '#e0e7ff',
+    backgroundColor: '#DDEEED',
   },
   categoryChipText: {
-    color: '#4338ca',
+    color: '#075454',
   },
   actions: {
     justifyContent: 'flex-start',

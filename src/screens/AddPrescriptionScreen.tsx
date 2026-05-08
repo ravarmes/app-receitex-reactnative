@@ -184,7 +184,7 @@ export default function AddPrescriptionScreen() {
 
   const renderCategoryChips = () => {
     if (!symptomCategories) return null;
-    
+
     return (
       <View style={styles.chipContainer}>
         {symptomCategories
@@ -192,8 +192,8 @@ export default function AddPrescriptionScreen() {
           .map(cat => cat.trim())
           .filter(cat => cat !== '')
           .map((cat, index) => (
-            <Chip 
-              key={index} 
+            <Chip
+              key={index}
               style={styles.chip}
               textStyle={styles.chipText}
             >
@@ -205,7 +205,7 @@ export default function AddPrescriptionScreen() {
   };
 
   return (
-    <KeyboardAvoidingView 
+    <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       style={{ flex: 1 }}
     >
@@ -220,7 +220,7 @@ export default function AddPrescriptionScreen() {
             </Card.Content>
           </Card>
         )}
-        
+
         <Surface style={styles.form} elevation={2}>
           <Text style={styles.formTitle}>{isEditing ? 'Editar Receita' : 'Nova Receita'}</Text>
           <Divider style={styles.divider} />
@@ -241,8 +241,8 @@ export default function AddPrescriptionScreen() {
                 style={styles.photoButton}
                 onPress={handleTakePhoto}
               >
-                <MaterialCommunityIcons name="camera" size={28} color="#6366f1" />
-                <Text style={styles.photoButtonText}>Tirar Foto</Text>
+                <MaterialCommunityIcons name="camera" size={28} color="#0E7C78" />
+                <Text style={styles.photoButtonText}>Tirar foto</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.photoButton}
@@ -257,16 +257,16 @@ export default function AddPrescriptionScreen() {
                   );
                 }}
               >
-                <MaterialCommunityIcons name="image-multiple" size={28} color="#6366f1" />
+                <MaterialCommunityIcons name="image-multiple" size={28} color="#0E7C78" />
                 <Text style={styles.photoButtonText}>Galeria</Text>
               </TouchableOpacity>
             </View>
           </View>
-          
+
           <View style={styles.inputContainer}>
             <Text style={styles.inputLabel}>Médico</Text>
             <View style={styles.inputWithIcon}>
-              <MaterialCommunityIcons name="doctor" size={24} color="#6366f1" style={styles.inputIcon} />
+              <MaterialCommunityIcons name="doctor" size={24} color="#0E7C78" style={styles.inputIcon} />
               <TextInput
                 style={[styles.nativeInput, styles.inputWithIconField]}
                 placeholder="Nome do médico"
@@ -283,7 +283,7 @@ export default function AddPrescriptionScreen() {
           <View style={styles.inputContainer}>
             <Text style={styles.inputLabel}>Paciente</Text>
             <View style={styles.inputWithIcon}>
-              <MaterialCommunityIcons name="account" size={24} color="#6366f1" style={styles.inputIcon} />
+              <MaterialCommunityIcons name="account" size={24} color="#0E7C78" style={styles.inputIcon} />
               <TextInput
                 style={[styles.nativeInput, styles.inputWithIconField]}
                 placeholder="Nome do paciente"
@@ -304,7 +304,7 @@ export default function AddPrescriptionScreen() {
               onPress={() => setShowDatePicker(true)}
               activeOpacity={0.7}
             >
-              <MaterialCommunityIcons name="calendar" size={24} color="#6366f1" style={styles.inputIcon} />
+              <MaterialCommunityIcons name="calendar" size={24} color="#0E7C78" style={styles.inputIcon} />
               <Text style={[
                 styles.datePickerText,
                 !appointmentDate && styles.datePickerPlaceholder,
@@ -429,7 +429,7 @@ export default function AddPrescriptionScreen() {
           <View style={styles.inputContainer}>
             <Text style={styles.inputLabel}>Categorias de Sintomas</Text>
             <View style={styles.inputWithIcon}>
-              <MaterialCommunityIcons name="tag-multiple" size={24} color="#6366f1" style={styles.inputIcon} />
+              <MaterialCommunityIcons name="tag-multiple" size={24} color="#0E7C78" style={styles.inputIcon} />
               <TextInput
                 style={[styles.nativeInput, styles.inputWithIconField, { height: 90, textAlignVertical: 'top', paddingTop: 10 }]}
                 placeholder="Ex: dor de cabeça, febre, alergia (separadas por vírgula)"
@@ -443,7 +443,7 @@ export default function AddPrescriptionScreen() {
               />
             </View>
           </View>
-          
+
           {renderCategoryChips()}
 
           <Button
@@ -456,13 +456,13 @@ export default function AddPrescriptionScreen() {
               <MaterialCommunityIcons name="check" size={size} color={color} />
             )}
           >
-            {isEditing ? 'Atualizar Receita' : 'Salvar Receita'}
+            {isEditing ? 'Atualizar Receita' : 'Salvar receita'}
           </Button>
         </Surface>
 
         {!isEditing && (
           <View style={styles.tipContainer}>
-            <MaterialCommunityIcons name="lightbulb-outline" size={20} color="#6366f1" />
+            <MaterialCommunityIcons name="lightbulb-outline" size={20} color="#0E7C78" />
             <Text style={styles.tipText}>
               Dica: Inclua o máximo de detalhes para facilitar a busca futura.
             </Text>
@@ -476,7 +476,7 @@ export default function AddPrescriptionScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f7fa',
+    backgroundColor: '#F5F7F7',
   },
   form: {
     margin: 16,
@@ -543,15 +543,15 @@ const styles = StyleSheet.create({
   },
   chip: {
     margin: 4,
-    backgroundColor: '#e0e7ff',
+    backgroundColor: '#DDEEED',
   },
   chipText: {
-    color: '#4f46e5',
+    color: '#075454',
   },
   submitButton: {
     marginTop: 12,
     paddingVertical: 4,
-    backgroundColor: '#6366f1',
+    backgroundColor: '#0E7C78',
     borderRadius: 10,
   },
   buttonLabel: {
@@ -581,15 +581,15 @@ const styles = StyleSheet.create({
     padding: 12,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f0f0ff',
+    backgroundColor: '#E8F5F4',
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#e0e7ff',
+    borderColor: '#DDEEED',
   },
   tipText: {
     marginLeft: 8,
     fontSize: 13,
-    color: '#4338ca',
+    color: '#075454',
     flex: 1,
     lineHeight: 18,
   },
@@ -631,7 +631,7 @@ const styles = StyleSheet.create({
   photoButtonText: {
     marginTop: 6,
     fontSize: 13,
-    color: '#6366f1',
+    color: '#0E7C78',
     fontWeight: '600',
   },
   // Date picker styles
@@ -676,7 +676,7 @@ const styles = StyleSheet.create({
   },
   dateModalConfirm: {
     fontSize: 15,
-    color: '#6366f1',
+    color: '#0E7C78',
     fontWeight: '700',
   },
   datePickerColumns: {
@@ -708,14 +708,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   datePickerItemSelected: {
-    backgroundColor: '#e0e7ff',
+    backgroundColor: '#DDEEED',
   },
   datePickerItemText: {
     fontSize: 15,
     color: '#374151',
   },
   datePickerItemTextSelected: {
-    color: '#4f46e5',
+    color: '#075454',
     fontWeight: '700',
   },
 });

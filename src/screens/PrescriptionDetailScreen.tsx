@@ -132,14 +132,14 @@ export default function PrescriptionDetailScreen() {
       <Surface style={styles.card} elevation={2}>
         <View style={styles.cardHeader}>
           <View style={styles.titleRow}>
-            <MaterialCommunityIcons name="prescription" size={24} color="#6366f1" />
+            <MaterialCommunityIcons name="prescription" size={24} color="#0E7C78" />
             <Text style={styles.cardTitle}>Detalhes da Receita</Text>
           </View>
         </View>
         <Divider style={styles.divider} />
 
         <View style={styles.fieldRow}>
-          <MaterialCommunityIcons name="doctor" size={20} color="#6366f1" />
+          <MaterialCommunityIcons name="doctor" size={20} color="#0E7C78" />
           <View style={styles.fieldContent}>
             <Text style={styles.fieldLabel}>Médico</Text>
             <Text style={styles.fieldValue}>Dr(a). {prescription.doctorName}</Text>
@@ -147,7 +147,7 @@ export default function PrescriptionDetailScreen() {
         </View>
 
         <View style={styles.fieldRow}>
-          <MaterialCommunityIcons name="account" size={20} color="#6366f1" />
+          <MaterialCommunityIcons name="account" size={20} color="#0E7C78" />
           <View style={styles.fieldContent}>
             <Text style={styles.fieldLabel}>Paciente</Text>
             <Text style={styles.fieldValue}>{prescription.patientName}</Text>
@@ -155,7 +155,7 @@ export default function PrescriptionDetailScreen() {
         </View>
 
         <View style={styles.fieldRow}>
-          <MaterialCommunityIcons name="calendar" size={20} color="#6366f1" />
+          <MaterialCommunityIcons name="calendar" size={20} color="#0E7C78" />
           <View style={styles.fieldContent}>
             <Text style={styles.fieldLabel}>Data da Consulta</Text>
             <Text style={styles.fieldValue}>{formatDate(prescription.appointmentDate)}</Text>
@@ -167,7 +167,7 @@ export default function PrescriptionDetailScreen() {
       <Surface style={styles.card} elevation={2}>
         <View style={styles.cardHeader}>
           <View style={styles.titleRow}>
-            <MaterialCommunityIcons name="stethoscope" size={24} color="#6366f1" />
+            <MaterialCommunityIcons name="stethoscope" size={24} color="#0E7C78" />
             <Text style={styles.cardTitle}>Sintomas</Text>
           </View>
         </View>
@@ -236,7 +236,7 @@ export default function PrescriptionDetailScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f7fa',
+    backgroundColor: '#F5F7F7',
   },
   photo: {
     width: '100%',
@@ -351,10 +351,10 @@ const styles = StyleSheet.create({
   categoryChip: {
     marginRight: 8,
     marginBottom: 8,
-    backgroundColor: '#e0e7ff',
+    backgroundColor: '#DDEEED',
   },
   categoryChipText: {
-    color: '#4338ca',
+    color: '#075454',
   },
   metaCard: {
     marginHorizontal: 16,
@@ -380,7 +380,7 @@ const styles = StyleSheet.create({
   },
   editButton: {
     flex: 2,
-    backgroundColor: '#6366f1',
+    backgroundColor: '#0E7C78',
     borderRadius: 10,
   },
   deleteButton: {
@@ -408,6 +408,6 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   backButton: {
-    backgroundColor: '#6366f1',
+    backgroundColor: '#0E7C78',
   },
 });

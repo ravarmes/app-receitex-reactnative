@@ -9,7 +9,6 @@ import { BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
 import adConfig from '../utils/adConfig';
 import { useIap } from '../contexts/IapContext';
 
-// Componente para representar um gráfico de barras simples
 const BarChart = ({ data, maxValue }: { data: [string, number][]; maxValue: number }) => {
   const barWidthMultiplier = 0.75;
 
@@ -19,14 +18,14 @@ const BarChart = ({ data, maxValue }: { data: [string, number][]; maxValue: numb
         <View key={index} style={styles.barContainer}>
           <Text style={styles.barLabel} numberOfLines={1}>{label}</Text>
           <View style={styles.barWrapper}>
-            <View 
+            <View
               style={[
-                styles.bar, 
-                { 
+                styles.bar,
+                {
                   width: `${Math.min(100, (value / maxValue) * 100 * barWidthMultiplier)}%`,
                   backgroundColor: getColorForIndex(index)
                 }
-              ]} 
+              ]}
             />
             <Text style={styles.barValue}>{value}</Text>
           </View>
@@ -37,7 +36,7 @@ const BarChart = ({ data, maxValue }: { data: [string, number][]; maxValue: numb
 };
 
 const getColorForIndex = (index: number): string => {
-  const colors = ['#6366f1', '#0ea5e9', '#10b981', '#f59e0b', '#f43f5e'];
+  const colors = ['#0E7C78', '#1FA899', '#3FA796', '#f59e0b', '#f43f5e'];
   return colors[index % colors.length];
 };
 
@@ -52,11 +51,8 @@ export default function ReportsScreen() {
     const uniquePatients = new Set(prescriptions.map(p => p.patientName)).size;
     const uniqueCategories = new Set(prescriptions.flatMap(p => p.symptomCategories)).size;
 
-    // Contagem por médico
     const doctorCounts: Record<string, number> = {};
-    // Contagem por paciente
     const patientCounts: Record<string, number> = {};
-    // Contagem por categoria
     const categoryCounts: Record<string, number> = {};
 
     prescriptions.forEach(p => {
@@ -71,7 +67,6 @@ export default function ReportsScreen() {
     const sortedPatients = Object.entries(patientCounts).sort(([, a], [, b]) => b - a).slice(0, 5) as [string, number][];
     const sortedCategories = Object.entries(categoryCounts).sort(([, a], [, b]) => b - a).slice(0, 5) as [string, number][];
 
-    // Receitas recentes (por createdAt)
     const sortedByDate = [...prescriptions].sort(
       (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     );
@@ -134,31 +129,31 @@ export default function ReportsScreen() {
       {/* Visão Geral */}
       <Surface style={styles.overviewCard} elevation={2}>
         <View style={styles.cardHeader}>
-          <MaterialCommunityIcons name="chart-areaspline" size={22} color="#6366f1" />
-          <Text style={styles.cardTitle}>Visão Geral</Text>
+          <MaterialCommunityIcons name="chart-areaspline" size={22} color="#0E7C78" />
+          <Text style={styles.cardTitle}>Visão geral</Text>
         </View>
         <Divider style={styles.divider} />
 
         <View style={styles.statsGrid}>
           <View style={styles.statItem}>
-            <View style={[styles.iconCircle, { backgroundColor: '#e0e7ff' }]}>
-              <MaterialCommunityIcons name="prescription" size={22} color="#6366f1" />
+            <View style={[styles.iconCircle, { backgroundColor: '#E0F4F3' }]}>
+              <MaterialCommunityIcons name="prescription" size={22} color="#0E7C78" />
             </View>
             <Text style={styles.statValue}>{stats.total}</Text>
             <Text style={styles.statLabel}>Receitas</Text>
           </View>
-          
+
           <View style={styles.statItem}>
-            <View style={[styles.iconCircle, { backgroundColor: '#e0f2fe' }]}>
-              <MaterialCommunityIcons name="doctor" size={22} color="#0ea5e9" />
+            <View style={[styles.iconCircle, { backgroundColor: '#E0F4F3' }]}>
+              <MaterialCommunityIcons name="doctor" size={22} color="#1FA899" />
             </View>
             <Text style={styles.statValue}>{stats.uniqueDoctors}</Text>
             <Text style={styles.statLabel}>Médicos</Text>
           </View>
 
           <View style={styles.statItem}>
-            <View style={[styles.iconCircle, { backgroundColor: '#ecfdf5' }]}>
-              <MaterialCommunityIcons name="account-group" size={22} color="#10b981" />
+            <View style={[styles.iconCircle, { backgroundColor: '#E0F4F3' }]}>
+              <MaterialCommunityIcons name="account-group" size={22} color="#3FA796" />
             </View>
             <Text style={styles.statValue}>{stats.uniquePatients}</Text>
             <Text style={styles.statLabel}>Pacientes</Text>
@@ -170,13 +165,13 @@ export default function ReportsScreen() {
       {stats.oldest && stats.newest && (
         <Surface style={styles.card} elevation={2}>
           <View style={styles.cardHeader}>
-            <MaterialCommunityIcons name="calendar-range" size={22} color="#6366f1" />
-            <Text style={styles.cardTitle}>Período dos Registros</Text>
+            <MaterialCommunityIcons name="calendar-range" size={22} color="#0E7C78" />
+            <Text style={styles.cardTitle}>Período dos registros</Text>
           </View>
           <Divider style={styles.divider} />
           <View style={styles.timelineRow}>
             <View style={styles.timelineItem}>
-              <Text style={styles.timelineLabel}>Registro mais antigo</Text>
+              <Text style={styles.timelineLabel}>Mais antigo</Text>
               <Text style={styles.timelineValue}>{formatDate(stats.oldest.createdAt)}</Text>
               <Text style={styles.timelineSub} numberOfLines={1}>Dr(a). {stats.oldest.doctorName}</Text>
             </View>
@@ -184,7 +179,7 @@ export default function ReportsScreen() {
               <MaterialCommunityIcons name="arrow-right" size={20} color="#cbd5e1" />
             </View>
             <View style={styles.timelineItem}>
-              <Text style={styles.timelineLabel}>Registro mais recente</Text>
+              <Text style={styles.timelineLabel}>Mais recente</Text>
               <Text style={styles.timelineValue}>{formatDate(stats.newest.createdAt)}</Text>
               <Text style={styles.timelineSub} numberOfLines={1}>Dr(a). {stats.newest.doctorName}</Text>
             </View>
@@ -195,8 +190,8 @@ export default function ReportsScreen() {
       {/* Receitas recentes */}
       <Surface style={styles.card} elevation={2}>
         <View style={styles.cardHeader}>
-          <MaterialCommunityIcons name="clock-outline" size={22} color="#6366f1" />
-          <Text style={styles.cardTitle}>Receitas Recentes</Text>
+          <MaterialCommunityIcons name="clock-outline" size={22} color="#0E7C78" />
+          <Text style={styles.cardTitle}>Receitas recentes</Text>
         </View>
         <Divider style={styles.divider} />
         <View style={styles.recentList}>
@@ -220,8 +215,8 @@ export default function ReportsScreen() {
       {/* Top médicos */}
       <Surface style={styles.card} elevation={2}>
         <View style={styles.cardHeader}>
-          <MaterialCommunityIcons name="doctor" size={22} color="#6366f1" />
-          <Text style={styles.cardTitle}>Médicos Mais Frequentes</Text>
+          <MaterialCommunityIcons name="doctor" size={22} color="#0E7C78" />
+          <Text style={styles.cardTitle}>Médicos mais frequentes</Text>
         </View>
         <Divider style={styles.divider} />
         {stats.sortedDoctors.length > 0 ? (
@@ -237,8 +232,8 @@ export default function ReportsScreen() {
       {stats.sortedPatients.length > 1 && (
         <Surface style={styles.card} elevation={2}>
           <View style={styles.cardHeader}>
-            <MaterialCommunityIcons name="account-multiple" size={22} color="#6366f1" />
-            <Text style={styles.cardTitle}>Pacientes com Mais Receitas</Text>
+            <MaterialCommunityIcons name="account-multiple" size={22} color="#0E7C78" />
+            <Text style={styles.cardTitle}>Pacientes com mais receitas</Text>
           </View>
           <Divider style={styles.divider} />
           <BarChart data={stats.sortedPatients} maxValue={stats.sortedPatients[0][1]} />
@@ -248,8 +243,8 @@ export default function ReportsScreen() {
       {/* Top categorias */}
       <Surface style={styles.card} elevation={2}>
         <View style={styles.cardHeader}>
-          <MaterialCommunityIcons name="tag-multiple" size={22} color="#6366f1" />
-          <Text style={styles.cardTitle}>Categorias Mais Comuns</Text>
+          <MaterialCommunityIcons name="tag-multiple" size={22} color="#0E7C78" />
+          <Text style={styles.cardTitle}>Categorias mais comuns</Text>
         </View>
         <Divider style={styles.divider} />
         {stats.sortedCategories.length > 0 ? (
@@ -269,7 +264,7 @@ export default function ReportsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f7fa',
+    backgroundColor: '#F5F7F7',
   },
   overviewCard: {
     margin: 16,
@@ -376,7 +371,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#6366f1',
+    backgroundColor: '#0E7C78',
     marginRight: 12,
   },
   recentContent: {
@@ -440,7 +435,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 32,
-    backgroundColor: '#f5f7fa',
+    backgroundColor: '#F5F7F7',
   },
   emptyScreenTitle: {
     fontSize: 18,
@@ -466,4 +461,4 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     backgroundColor: 'white',
   },
-}); 
+});

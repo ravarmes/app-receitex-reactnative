@@ -1,0 +1,126 @@
+# Quiz da Fé - Texto de Explicação do App
+
+## Visão geral
+
+O **Quiz da Fé** é um aplicativo mobile desenvolvido em React Native para ajudar crianças, adolescentes e famílias a aprenderem sobre a Bíblia de um jeito leve, divertido e educativo. A proposta do app é transformar o estudo bíblico em uma experiência interativa e gamificada, tornando o aprendizado acessível para qualquer pessoa, independentemente da faixa etária ou do nível de conhecimento.
+
+Mais do que um jogo de perguntas e respostas, o Quiz da Fé reúne conteúdo bíblico estruturado, feedback educativo a cada questão e uma progressão de dificuldade que estimula o usuário a continuar aprendendo e evoluindo no seu conhecimento das Escrituras.
+
+## Descrição do aplicativo
+
+O Quiz da Fé funciona como uma plataforma interativa de perguntas bíblicas. O usuário escolhe uma das cinco categorias temáticas disponíveis, seleciona o nível de dificuldade desejado e responde a dez perguntas aleatórias, cada uma com quatro alternativas de resposta.
+
+Após cada resposta, o app apresenta feedback visual imediato — destacando em verde a alternativa correta e em vermelho a escolha incorreta — e exibe uma explicação educativa sobre o tema da questão. Ao final da rodada, o usuário recebe uma tela de resultado com estatísticas detalhadas: total de acertos, erros, percentual de aproveitamento e uma mensagem motivacional personalizada conforme o desempenho.
+
+## Objetivo principal
+
+O principal objetivo do Quiz da Fé é oferecer ao usuário uma forma prática e envolvente de **conhecer, revisar e aprofundar o conteúdo bíblico**. O app foi pensado para pessoas que desejam aprender mais sobre a Bíblia, mas que preferem uma abordagem dinâmica e interativa em vez do estudo tradicional.
+
+Com cinco categorias temáticas e três níveis de dificuldade, o aplicativo atende tanto quem está dando os primeiros passos no conhecimento bíblico quanto quem já tem familiaridade com o conteúdo e quer se desafiar com questões mais profundas.
+
+## Problema que o app resolve
+
+O estudo bíblico muitas vezes é percebido como algo denso, formal ou pouco acessível, especialmente para crianças e jovens. Sem uma linguagem adequada e sem estímulo para o engajamento, o aprendizado fica limitado e o interesse se perde com o tempo.
+
+O Quiz da Fé resolve esse problema ao oferecer uma experiência gamificada que:
+
+- apresenta o conteúdo bíblico em formato de quiz, com linguagem clara e acessível;
+- organiza as perguntas em categorias temáticas para facilitar o aprendizado progressivo;
+- adapta o nível de exigência ao perfil do usuário por meio dos três graus de dificuldade;
+- reforça o aprendizado com explicações após cada resposta;
+- mantém a motivação com pontuação em tempo real e mensagens de incentivo ao final de cada rodada.
+
+## Principais funcionalidades
+
+### 1. Seleção de categoria
+
+O usuário escolhe entre cinco categorias temáticas para direcionar o foco do quiz:
+
+- **Antigo Testamento**: criação, patriarcas, reis e profetas;
+- **Novo Testamento**: Jesus, evangelhos e igreja primitiva;
+- **Personagens Bíblicos**: figuras de fé, coragem e propósito;
+- **Citações Bíblicas**: versos e referências para aprender e memorizar;
+- **Questões Gerais**: temas variados da Bíblia.
+
+Cada categoria é apresentada com ícone visual, cor própria e descrição resumida, tornando a escolha intuitiva e atrativa.
+
+### 2. Níveis de dificuldade
+
+Após escolher a categoria, o usuário seleciona um dos três níveis disponíveis:
+
+- **Fácil**: perguntas sobre nomes, eventos principais e conhecimentos básicos — ideal para iniciantes;
+- **Médio**: questões de interpretação, detalhes e contexto — para quem já conhece o básico;
+- **Difícil**: perguntas com referências específicas, detalhes aprofundados e nomes menos conhecidos — para quem quer se desafiar.
+
+Essa estrutura garante que o app seja inclusivo e progressivo, atendendo diferentes perfis de conhecimento.
+
+### 3. Quiz com perguntas aleatórias
+
+Cada rodada apresenta dez perguntas selecionadas aleatoriamente da categoria e do nível escolhidos. As perguntas possuem quatro alternativas de resposta, sendo apenas uma correta. A aleatoriedade garante que cada partida seja uma experiência nova, estimulando o usuário a jogar novamente e ampliar seu aprendizado.
+
+### 4. Feedback visual e educativo
+
+Após responder cada questão, o app destaca visualmente a alternativa correta (em verde) e a resposta incorreta do usuário (em vermelho), com as demais alternativas desativadas. Em seguida, exibe uma explicação educativa sobre o tema da pergunta, reforçando o conteúdo e incentivando a reflexão.
+
+### 5. Pontuação em tempo real
+
+Durante o quiz, um contador de pontos é exibido no topo da tela e atualizado a cada acerto. Esse recurso cria uma experiência mais dinâmica e competitiva, incentivando o usuário a melhorar seu desempenho a cada rodada.
+
+### 6. Barra de progresso
+
+Uma barra de progresso visual, acompanhada de um contador de perguntas (por exemplo, "3 de 10"), mantém o usuário informado sobre o andamento da rodada. Esse recurso ajuda a manter o ritmo e evita que o jogador se perca no fluxo do quiz.
+
+### 7. Tela de resultado com estatísticas
+
+Ao concluir a rodada, o usuário acessa uma tela de resultado completa, com:
+
+- total de perguntas respondidas;
+- número de acertos (com destaque em verde);
+- número de erros;
+- percentual de aproveitamento.
+
+Acompanhando as estatísticas, uma mensagem motivacional personalizada é exibida conforme o desempenho: incentivo para quem errou mais, elogio para quem foi bem e parabéns especiais para quem acertou quase tudo. O usuário pode jogar novamente com a mesma configuração ou voltar ao início para escolher outra categoria ou dificuldade.
+
+### 8. Tutorial "Como funciona"
+
+Para novos usuários, o app oferece uma tela explicativa com quatro passos ilustrados, descrevendo o fluxo completo: escolher a categoria, selecionar a dificuldade, responder o quiz e conferir o resultado. Essa funcionalidade reduz a curva de aprendizado e torna a experiência acessível para qualquer perfil de usuário.
+
+### 9. Versão sem anúncios
+
+O aplicativo conta com um modelo de monetização baseado em anúncios e oferece a opção de **compra única** para remover as propagandas. Com isso, o usuário pode escolher entre a versão gratuita com anúncios ou uma experiência mais limpa e sem interrupções, apoiando o desenvolvimento do app com um pagamento simples e definitivo.
+
+## Diferenciais do Quiz da Fé
+
+Entre os principais diferenciais do app, destacam-se:
+
+- foco em aprendizado bíblico de forma lúdica, acessível e familiar;
+- mais de 300 perguntas organizadas em cinco categorias temáticas;
+- três níveis de dificuldade que atendem desde iniciantes até conhecedores avançados;
+- feedback educativo após cada resposta, transformando o erro em aprendizado;
+- perguntas aleatórias a cada rodada, garantindo replayability e variedade;
+- interface moderna, limpa e intuitiva, adequada para todas as faixas etárias;
+- arquitetura escalável, permitindo a adição de novas categorias e perguntas com facilidade.
+
+## Público-alvo
+
+O Quiz da Fé pode ser utilizado por diferentes perfis de pessoas, especialmente:
+
+- crianças e adolescentes que frequentam igrejas, escolas bíblicas ou grupos de jovens;
+- famílias que desejam aprender e se divertir juntas com conteúdo bíblico;
+- professores e líderes religiosos que buscam ferramentas dinâmicas para ensino;
+- adultos que desejam revisar ou aprofundar seu conhecimento das Escrituras;
+- qualquer pessoa com curiosidade sobre a Bíblia e interesse por quiz e jogos educativos.
+
+## Tom e proposta de valor
+
+O app transmite uma proposta simples e direta: **aprender a Bíblia brincando, com leveza e propósito**. Sua proposta de valor está em oferecer um ambiente em que o conhecimento bíblico deixa de ser algo distante ou formal e passa a fazer parte de uma experiência interativa, divertida e significativa.
+
+O Quiz da Fé une fé, educação e entretenimento em uma única experiência. Ele desafia o usuário a testar o que sabe, aprender com os erros e descobrir, rodada após rodada, o quanto a Bíblia tem a oferecer a quem está disposto a conhecê-la com curiosidade e alegria.
+
+## Texto-base resumido para materiais de divulgação
+
+O Quiz da Fé é um aplicativo mobile criado para crianças, adolescentes e famílias aprenderem sobre a Bíblia de um jeito leve, divertido e educativo. Com mais de 300 perguntas distribuídas em cinco categorias temáticas — Antigo Testamento, Novo Testamento, Personagens Bíblicos, Citações Bíblicas e Questões Gerais —, o app oferece três níveis de dificuldade para atender desde iniciantes até conhecedores avançados. Cada rodada apresenta dez perguntas aleatórias com quatro alternativas, feedback visual imediato e explicações educativas após cada resposta. Ao final, o usuário confere seus acertos, erros e percentual de aproveitamento, com mensagens motivacionais personalizadas. Com interface moderna e proposta acessível, o Quiz da Fé transforma o estudo bíblico em uma experiência interativa, progressiva e inspiradora.
+
+## Texto-base mais envolvente para vídeo, infográfico ou podcast
+
+Aprender sobre a Bíblia pode ser uma experiência muito mais divertida do que parece. O Quiz da Fé surgiu com essa missão: levar crianças, adolescentes e famílias a descobrirem, revisitarem e aprofundarem o conhecimento bíblico por meio de um jogo interativo, acessível e cheio de significado. No app, o usuário escolhe entre cinco categorias temáticas — do Antigo ao Novo Testamento, passando por personagens, citações e questões gerais —, seleciona o nível de dificuldade que combina com o seu momento e enfrenta dez perguntas aleatórias, cada uma com quatro alternativas. A cada resposta, o app mostra o que está certo, o que está errado e ainda explica o porquê, transformando cada erro em uma oportunidade de aprender. No final, estatísticas completas e mensagens de incentivo motivam o usuário a jogar de novo, tentar um nível mais difícil ou explorar uma nova categoria. Mais de 300 perguntas, três níveis de desafio e uma proposta que une fé, educação e entretenimento. O Quiz da Fé é para quem quer conhecer a Bíblia jogando — e descobrir, no caminho, o quanto ela tem a ensinar.
