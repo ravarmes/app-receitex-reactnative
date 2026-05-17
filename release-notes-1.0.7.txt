@@ -1,0 +1,7 @@
+Novidades desta versão:
+
+• Modo escuro: alterne entre tema claro e escuro pelo ícone no cabeçalho
+• Ordenação de receitas: organize por mais recente, mais antiga, médico ou paciente
+• Exportar receita: compartilhe como texto ou exporte em PDF
+• Gráficos aprimorados: percentuais nas barras e distribuição mensal de receitas
+• Textos e botões maiores para melhor legibilidade
