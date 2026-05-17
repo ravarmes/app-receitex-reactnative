@@ -8,11 +8,16 @@ import { RootStackNavigationProp } from '../navigation/types';
 import { BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
 import adConfig from '../utils/adConfig';
 import { useIap } from '../contexts/IapContext';
+import { useThemeMode } from '../context/ThemeContext';
+
+type SortOrder = 'newest' | 'oldest' | 'doctorAZ' | 'patientAZ';
 
 export default function PrescriptionsListScreen() {
   const { prescriptions, deletePrescription } = usePrescriptions();
   const navigation = useNavigation<RootStackNavigationProp>();
   const { isAdFree } = useIap();
+  const { colors } = useThemeMode();
+
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null);
   const [selectedPatient, setSelectedPatient] = useState<string | null>(null);
@@ -21,10 +26,11 @@ export default function PrescriptionsListScreen() {
   const [doctorMenuVisible, setDoctorMenuVisible] = useState(false);
   const [patientMenuVisible, setPatientMenuVisible] = useState(false);
   const [categoryMenuVisible, setCategoryMenuVisible] = useState(false);
+  const [sortMenuVisible, setSortMenuVisible] = useState(false);
   const [showDateInput, setShowDateInput] = useState(false);
   const [expandedCardId, setExpandedCardId] = useState<number | null>(null);
+  const [sortOrder, setSortOrder] = useState<SortOrder>('newest');
 
-  // Extract unique values for filter dropdowns
   const allDoctors = useMemo(() =>
     Array.from(new Set(prescriptions.map(p => p.doctorName))).sort(),
     [prescriptions]
@@ -48,10 +54,8 @@ export default function PrescriptionsListScreen() {
     setDateFilter('');
   };
 
-  // Filter prescriptions — all filters are combinable
   const filteredPrescriptions = useMemo(() => {
-    return prescriptions.filter(prescription => {
-      // Text search across all relevant fields
+    const filtered = prescriptions.filter(prescription => {
       if (searchQuery) {
         const q = searchQuery.toLowerCase();
         const matchesSearch =
@@ -62,15 +66,34 @@ export default function PrescriptionsListScreen() {
           prescription.symptomCategories.some(cat => cat.toLowerCase().includes(q));
         if (!matchesSearch) return false;
       }
-
       if (selectedDoctor && prescription.doctorName !== selectedDoctor) return false;
       if (selectedPatient && prescription.patientName !== selectedPatient) return false;
       if (selectedCategory && !prescription.symptomCategories.includes(selectedCategory)) return false;
       if (dateFilter && !prescription.appointmentDate.toLowerCase().includes(dateFilter.toLowerCase())) return false;
-
       return true;
     });
-  }, [prescriptions, searchQuery, selectedDoctor, selectedPatient, selectedCategory, dateFilter]);
+
+    return [...filtered].sort((a, b) => {
+      switch (sortOrder) {
+        case 'oldest':
+          return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        case 'doctorAZ':
+          return a.doctorName.localeCompare(b.doctorName, 'pt-BR');
+        case 'patientAZ':
+          return a.patientName.localeCompare(b.patientName, 'pt-BR');
+        case 'newest':
+        default:
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      }
+    });
+  }, [prescriptions, searchQuery, selectedDoctor, selectedPatient, selectedCategory, dateFilter, sortOrder]);
+
+  const sortLabels: Record<SortOrder, string> = {
+    newest: 'Mais recentes',
+    oldest: 'Mais antigas',
+    doctorAZ: 'Médico A→Z',
+    patientAZ: 'Paciente A→Z',
+  };
 
   const toggleExpand = (id: number) => {
     setExpandedCardId(expandedCardId === id ? null : id);
@@ -92,9 +115,15 @@ export default function PrescriptionsListScreen() {
         <Chip
           selected={!!selected}
           onPress={() => setVisible(true)}
-          style={[styles.filterChip, selected ? styles.selectedChip : null]}
-          textStyle={selected ? styles.selectedChipText : styles.chipText}
-          icon={({size, color}) => (
+          style={[
+            styles.filterChip,
+            { backgroundColor: selected ? colors.primary : colors.surface },
+          ]}
+          textStyle={[
+            styles.chipText,
+            { color: selected ? 'white' : colors.textSecondary },
+          ]}
+          icon={({ size, color }) => (
             <MaterialCommunityIcons name={icon} size={size} color={color} />
           )}
         >
@@ -111,8 +140,8 @@ export default function PrescriptionsListScreen() {
             setSelected(option);
             setVisible(false);
           }}
-          style={selected === option ? styles.selectedMenuItem : null}
-          titleStyle={selected === option ? styles.selectedMenuItemText : null}
+          style={selected === option ? { backgroundColor: colors.chipBg } : undefined}
+          titleStyle={selected === option ? { color: colors.chipText, fontWeight: 'bold' } : { color: colors.text }}
         />
       ))}
     </Menu>
@@ -120,16 +149,15 @@ export default function PrescriptionsListScreen() {
 
   const renderActiveFilters = () => {
     if (!hasActiveFilters) return null;
-
     return (
       <View style={styles.activeFiltersContainer}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {selectedDoctor && (
             <Chip
               onClose={() => setSelectedDoctor(null)}
-              style={styles.activeFilterChip}
-              textStyle={styles.activeFilterChipText}
-              icon={({size}) => <MaterialCommunityIcons name="doctor" size={size} color="#0E7C78" />}
+              style={[styles.activeFilterChip, { backgroundColor: colors.chipBg }]}
+              textStyle={[styles.activeFilterChipText, { color: colors.chipText }]}
+              icon={({ size }) => <MaterialCommunityIcons name="doctor" size={size} color={colors.primary} />}
             >
               {selectedDoctor}
             </Chip>
@@ -137,9 +165,9 @@ export default function PrescriptionsListScreen() {
           {selectedPatient && (
             <Chip
               onClose={() => setSelectedPatient(null)}
-              style={styles.activeFilterChip}
-              textStyle={styles.activeFilterChipText}
-              icon={({size}) => <MaterialCommunityIcons name="account" size={size} color="#1FA899" />}
+              style={[styles.activeFilterChip, { backgroundColor: colors.chipBg }]}
+              textStyle={[styles.activeFilterChipText, { color: colors.chipText }]}
+              icon={({ size }) => <MaterialCommunityIcons name="account" size={size} color={colors.primaryLight} />}
             >
               {selectedPatient}
             </Chip>
@@ -147,9 +175,9 @@ export default function PrescriptionsListScreen() {
           {selectedCategory && (
             <Chip
               onClose={() => setSelectedCategory(null)}
-              style={styles.activeFilterChip}
-              textStyle={styles.activeFilterChipText}
-              icon={({size}) => <MaterialCommunityIcons name="tag" size={size} color="#3FA796" />}
+              style={[styles.activeFilterChip, { backgroundColor: colors.chipBg }]}
+              textStyle={[styles.activeFilterChipText, { color: colors.chipText }]}
+              icon={({ size }) => <MaterialCommunityIcons name="tag" size={size} color={colors.primaryLighter} />}
             >
               {selectedCategory}
             </Chip>
@@ -157,15 +185,15 @@ export default function PrescriptionsListScreen() {
           {dateFilter && (
             <Chip
               onClose={() => setDateFilter('')}
-              style={styles.activeFilterChip}
-              textStyle={styles.activeFilterChipText}
-              icon={({size}) => <MaterialCommunityIcons name="calendar" size={size} color="#f59e0b" />}
+              style={[styles.activeFilterChip, { backgroundColor: colors.chipBg }]}
+              textStyle={[styles.activeFilterChipText, { color: colors.chipText }]}
+              icon={({ size }) => <MaterialCommunityIcons name="calendar" size={size} color={colors.warning} />}
             >
               {dateFilter}
             </Chip>
           )}
           <TouchableOpacity onPress={clearAllFilters} style={styles.clearAllButton}>
-            <Text style={styles.clearAllText}>Limpar tudo</Text>
+            <Text style={[styles.clearAllText, { color: colors.primary }]}>Limpar tudo</Text>
           </TouchableOpacity>
         </ScrollView>
       </View>
@@ -174,14 +202,15 @@ export default function PrescriptionsListScreen() {
 
   const renderListHeader = () => (
     <View>
-      <Surface style={styles.searchBarContainer} elevation={1}>
+      <Surface style={[styles.searchBarContainer, { backgroundColor: colors.surface }]} elevation={1}>
         <Searchbar
           placeholder="Buscar por nome, data, sintoma..."
           onChangeText={setSearchQuery}
           value={searchQuery}
-          style={styles.searchBar}
-          inputStyle={styles.searchBarInput}
-          icon={() => <MaterialCommunityIcons name="magnify" size={22} color="#64748b" />}
+          style={[styles.searchBar, { backgroundColor: colors.surface }]}
+          inputStyle={[styles.searchBarInput, { color: colors.text }]}
+          placeholderTextColor={colors.inputPlaceholder}
+          icon={() => <MaterialCommunityIcons name="magnify" size={22} color={colors.iconSecondary} />}
         />
       </Surface>
 
@@ -194,9 +223,9 @@ export default function PrescriptionsListScreen() {
           <Chip
             selected={!!dateFilter}
             onPress={() => setShowDateInput(!showDateInput)}
-            style={[styles.filterChip, dateFilter ? styles.selectedChip : null]}
-            textStyle={dateFilter ? styles.selectedChipText : styles.chipText}
-            icon={({size, color}) => (
+            style={[styles.filterChip, { backgroundColor: dateFilter ? colors.primary : colors.surface }]}
+            textStyle={[styles.chipText, { color: dateFilter ? 'white' : colors.textSecondary }]}
+            icon={({ size, color }) => (
               <MaterialCommunityIcons name="calendar-search" size={size} color={color} />
             )}
           >
@@ -206,19 +235,19 @@ export default function PrescriptionsListScreen() {
       </View>
 
       {showDateInput && (
-        <View style={styles.dateInputContainer}>
-          <MaterialCommunityIcons name="calendar" size={20} color="#64748b" style={styles.dateInputIcon} />
+        <View style={[styles.dateInputContainer, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+          <MaterialCommunityIcons name="calendar" size={20} color={colors.iconSecondary} style={styles.dateInputIcon} />
           <TextInput
             placeholder="Filtrar por data (ex: 03/2026, 2026)"
             value={dateFilter}
             onChangeText={setDateFilter}
-            style={styles.dateInput}
-            placeholderTextColor="#94a3b8"
+            style={[styles.dateInput, { color: colors.text }]}
+            placeholderTextColor={colors.inputPlaceholder}
             autoFocus
           />
           {dateFilter ? (
             <TouchableOpacity onPress={() => { setDateFilter(''); setShowDateInput(false); }}>
-              <MaterialCommunityIcons name="close-circle" size={20} color="#94a3b8" />
+              <MaterialCommunityIcons name="close-circle" size={20} color={colors.textTertiary} />
             </TouchableOpacity>
           ) : null}
         </View>
@@ -226,10 +255,39 @@ export default function PrescriptionsListScreen() {
 
       {renderActiveFilters()}
 
-      <View style={styles.resultCount}>
-        <Text style={styles.resultCountText}>
+      <View style={styles.resultCountRow}>
+        <Text style={[styles.resultCountText, { color: colors.textSecondary }]}>
           {filteredPrescriptions.length} {filteredPrescriptions.length === 1 ? 'receita encontrada' : 'receitas encontradas'}
         </Text>
+
+        <Menu
+          visible={sortMenuVisible}
+          onDismiss={() => setSortMenuVisible(false)}
+          anchor={
+            <TouchableOpacity
+              onPress={() => setSortMenuVisible(true)}
+              style={[styles.sortButton, { backgroundColor: colors.primaryBg }]}
+            >
+              <MaterialCommunityIcons name="sort" size={16} color={colors.primary} />
+              <Text style={[styles.sortButtonText, { color: colors.primary }]}>
+                {sortLabels[sortOrder]}
+              </Text>
+            </TouchableOpacity>
+          }
+        >
+          {(Object.keys(sortLabels) as SortOrder[]).map(key => (
+            <Menu.Item
+              key={key}
+              title={sortLabels[key]}
+              onPress={() => { setSortOrder(key); setSortMenuVisible(false); }}
+              style={sortOrder === key ? { backgroundColor: colors.chipBg } : undefined}
+              titleStyle={sortOrder === key
+                ? { color: colors.chipText, fontWeight: 'bold', fontSize: 15 }
+                : { color: colors.text, fontSize: 15 }}
+              leadingIcon={sortOrder === key ? 'check' : undefined}
+            />
+          ))}
+        </Menu>
       </View>
     </View>
   );
@@ -239,48 +297,46 @@ export default function PrescriptionsListScreen() {
 
     return (
       <Card
-        style={styles.card}
+        style={[styles.card, { backgroundColor: colors.surface }]}
         onPress={() => navigation.navigate('DetalheReceita', { prescriptionId: prescription.id })}
         onLongPress={() => toggleExpand(prescription.id)}
       >
         <Card.Content>
           <View style={styles.prescriptionHeader}>
-            <MaterialCommunityIcons name="doctor" size={20} color="#0E7C78" />
-            <Text variant="titleMedium" style={styles.doctorName}>
+            <MaterialCommunityIcons name="doctor" size={20} color={colors.primary} />
+            <Text variant="titleMedium" style={[styles.doctorName, { color: colors.text }]}>
               Dr(a). {prescription.doctorName}
             </Text>
           </View>
           <View style={styles.prescriptionMeta}>
-            <MaterialCommunityIcons name="account" size={16} color="#64748b" />
-            <Text variant="bodyMedium" style={styles.patientName}>
+            <MaterialCommunityIcons name="account" size={17} color={colors.iconSecondary} />
+            <Text variant="bodyMedium" style={[styles.metaText, { color: colors.textSecondary }]}>
               {prescription.patientName}
             </Text>
           </View>
           <View style={styles.prescriptionMeta}>
-            <MaterialCommunityIcons name="calendar" size={16} color="#64748b" />
-            <Text variant="bodyMedium" style={styles.appointmentDate}>
+            <MaterialCommunityIcons name="calendar" size={17} color={colors.iconSecondary} />
+            <Text variant="bodyMedium" style={[styles.metaText, { color: colors.textSecondary, fontStyle: 'italic' }]}>
               {prescription.appointmentDate}
             </Text>
           </View>
 
           {prescription.symptomDescription ? (
-            <Text variant="bodyMedium" style={styles.descriptionText} numberOfLines={2}>
+            <Text variant="bodyMedium" style={[styles.descriptionText, { color: colors.textSecondary }]} numberOfLines={2}>
               {prescription.symptomDescription}
             </Text>
           ) : null}
 
           {isExpanded && (
             <>
-              <Divider style={styles.divider} />
+              <Divider style={[styles.divider, { backgroundColor: colors.border }]} />
               <View style={styles.categoriesContainer}>
                 {prescription.symptomCategories.map((category, index) => (
                   <Chip
                     key={index}
-                    style={styles.categoryChip}
-                    textStyle={styles.categoryChipText}
-                    onPress={() => {
-                      setSelectedCategory(category);
-                    }}
+                    style={[styles.categoryChip, { backgroundColor: colors.chipBg }]}
+                    textStyle={[styles.categoryChipText, { color: colors.chipText }]}
+                    onPress={() => setSelectedCategory(category)}
                   >
                     {category}
                   </Chip>
@@ -298,46 +354,35 @@ export default function PrescriptionsListScreen() {
             }}
             style={styles.actionButton}
           >
-            <MaterialCommunityIcons
-              name="pencil-outline"
-              size={24}
-              color="#0E7C78"
-            />
+            <MaterialCommunityIcons name="pencil-outline" size={26} color={colors.primary} />
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={(e) => {
               e.stopPropagation();
               Alert.alert(
-                "Confirmar exclusão",
-                "Tem certeza que deseja excluir esta receita?",
+                'Confirmar exclusão',
+                'Tem certeza que deseja excluir esta receita?',
                 [
+                  { text: 'Cancelar', style: 'cancel' },
                   {
-                    text: "Cancelar",
-                    style: "cancel"
-                  },
-                  {
-                    text: "Excluir",
+                    text: 'Excluir',
                     onPress: () => deletePrescription(prescription.id),
-                    style: "destructive"
-                  }
-                ]
+                    style: 'destructive',
+                  },
+                ],
               );
             }}
             style={styles.actionButton}
           >
-            <MaterialCommunityIcons
-              name="delete-outline"
-              size={24}
-              color="#666"
-            />
+            <MaterialCommunityIcons name="delete-outline" size={26} color={colors.iconSecondary} />
           </TouchableOpacity>
 
           <View style={styles.expandIndicator}>
             <MaterialCommunityIcons
               name={isExpanded ? 'chevron-up' : 'chevron-down'}
-              size={24}
-              color="#666"
+              size={26}
+              color={colors.textTertiary}
             />
           </View>
         </Card.Actions>
@@ -346,7 +391,7 @@ export default function PrescriptionsListScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <FlatList
         data={filteredPrescriptions}
         renderItem={renderItem}
@@ -359,18 +404,16 @@ export default function PrescriptionsListScreen() {
               <BannerAd
                 unitId={adConfig.getBannerAdId()}
                 size={BannerAdSize.LARGE_BANNER}
-                requestOptions={{
-                  requestNonPersonalizedAdsOnly: true,
-                }}
+                requestOptions={{ requestNonPersonalizedAdsOnly: true }}
               />
             </View>
           ) : null
         }
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <MaterialCommunityIcons name="prescription" size={64} color="#cbd5e1" />
-            <Text style={styles.emptyText}>Nenhuma receita encontrada</Text>
-            <Text style={styles.emptySubText}>Experimente outros termos de busca ou filtros</Text>
+            <MaterialCommunityIcons name="prescription" size={64} color={colors.iconMuted} />
+            <Text style={[styles.emptyText, { color: colors.textSecondary }]}>Nenhuma receita encontrada</Text>
+            <Text style={[styles.emptySubText, { color: colors.textTertiary }]}>Experimente outros termos de busca ou filtros</Text>
           </View>
         }
       />
@@ -381,23 +424,20 @@ export default function PrescriptionsListScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F7F7',
   },
   searchBarContainer: {
     margin: 16,
     marginBottom: 8,
     borderRadius: 12,
     overflow: 'hidden',
-    backgroundColor: 'white',
   },
   searchBar: {
     elevation: 0,
-    backgroundColor: 'white',
-    height: 48,
+    height: 52,
   },
   searchBarInput: {
-    fontSize: 14,
-    minHeight: 48,
+    fontSize: 15,
+    minHeight: 52,
   },
   filterChipsContainer: {
     paddingHorizontal: 16,
@@ -405,45 +445,30 @@ const styles = StyleSheet.create({
   },
   filterChip: {
     marginRight: 8,
-    backgroundColor: 'white',
-  },
-  selectedChip: {
-    backgroundColor: '#0E7C78',
   },
   chipText: {
-    color: '#4b5563',
-  },
-  selectedChipText: {
-    color: 'white',
+    fontSize: 14,
   },
   dropdownMenu: {
     marginTop: 48,
-  },
-  selectedMenuItem: {
-    backgroundColor: '#DDEEED',
-  },
-  selectedMenuItemText: {
-    color: '#075454',
-    fontWeight: 'bold',
   },
   dateInputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginHorizontal: 16,
     marginBottom: 8,
-    backgroundColor: 'white',
     borderRadius: 8,
     paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingVertical: 10,
     elevation: 1,
+    borderWidth: 1,
   },
   dateInputIcon: {
     marginRight: 8,
   },
   dateInput: {
     flex: 1,
-    fontSize: 14,
-    color: '#1e293b',
+    fontSize: 15,
     padding: 0,
   },
   activeFiltersContainer: {
@@ -452,28 +477,39 @@ const styles = StyleSheet.create({
   },
   activeFilterChip: {
     marginRight: 8,
-    backgroundColor: '#DDEEED',
   },
   activeFilterChipText: {
-    color: '#075454',
-    fontSize: 12,
+    fontSize: 13,
   },
   clearAllButton: {
     justifyContent: 'center',
     paddingHorizontal: 12,
   },
   clearAllText: {
-    color: '#0E7C78',
     fontWeight: 'bold',
-    fontSize: 13,
+    fontSize: 14,
   },
-  resultCount: {
+  resultCountRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: 16,
     marginBottom: 8,
   },
   resultCountText: {
-    color: '#64748b',
     fontSize: 14,
+  },
+  sortButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 8,
+    gap: 4,
+  },
+  sortButtonText: {
+    fontSize: 13,
+    fontWeight: '600',
   },
   listContainer: {
     paddingBottom: 16,
@@ -489,8 +525,6 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     borderRadius: 12,
     elevation: 1,
-    backgroundColor: 'white',
-    borderLeftWidth: 0,
   },
   prescriptionHeader: {
     flexDirection: 'row',
@@ -500,7 +534,6 @@ const styles = StyleSheet.create({
   doctorName: {
     marginLeft: 8,
     fontWeight: 'bold',
-    color: '#1e293b',
   },
   prescriptionMeta: {
     flexDirection: 'row',
@@ -508,24 +541,17 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     marginLeft: 4,
   },
-  patientName: {
+  metaText: {
     marginLeft: 8,
-    color: '#64748b',
-  },
-  appointmentDate: {
-    marginLeft: 8,
-    color: '#64748b',
-    fontStyle: 'italic',
+    fontSize: 14,
   },
   descriptionText: {
-    fontSize: 13,
-    lineHeight: 20,
+    fontSize: 14,
+    lineHeight: 21,
     marginTop: 8,
-    color: '#64748b',
   },
   divider: {
     marginVertical: 12,
-    backgroundColor: '#e2e8f0',
   },
   categoriesContainer: {
     flexDirection: 'row',
@@ -535,17 +561,16 @@ const styles = StyleSheet.create({
   categoryChip: {
     marginRight: 8,
     marginBottom: 8,
-    backgroundColor: '#DDEEED',
   },
   categoryChipText: {
-    color: '#075454',
+    fontSize: 13,
   },
   actions: {
     justifyContent: 'flex-start',
     paddingHorizontal: 8,
   },
   actionButton: {
-    padding: 8,
+    padding: 10,
   },
   expandIndicator: {
     flex: 1,
@@ -558,16 +583,14 @@ const styles = StyleSheet.create({
     marginTop: 40,
   },
   emptyText: {
-    fontSize: 16,
-    color: '#64748b',
+    fontSize: 17,
     marginTop: 16,
     fontWeight: '600',
   },
   emptySubText: {
-    fontSize: 13,
-    color: '#94a3b8',
+    fontSize: 14,
     marginTop: 6,
     textAlign: 'center',
-    lineHeight: 20,
+    lineHeight: 21,
   },
 });

@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { Text, Surface, useTheme, Card } from 'react-native-paper';
+import { Text, Surface, Card } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { usePrescriptions } from '../context/PrescriptionContext';
 import { useNavigation } from '@react-navigation/native';
 import { RootStackNavigationProp } from '../navigation/types';
 import { useIap } from '../contexts/IapContext';
+import { useThemeMode } from '../context/ThemeContext';
 
 interface FeatureCardProps {
   title: string;
@@ -14,52 +15,52 @@ interface FeatureCardProps {
   onPress: () => void;
 }
 
-const FeatureCard = ({ title, icon, description, onPress }: FeatureCardProps) => {
-  return (
-    <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
-      <Surface style={styles.featureCard} elevation={1}>
-        <View style={styles.featureIconContainer}>
-          <MaterialCommunityIcons name={icon} size={24} color="#0E7C78" />
-        </View>
-        <View style={styles.featureContent}>
-          <Text style={styles.featureTitle}>{title}</Text>
-          <Text style={styles.featureDescription}>{description}</Text>
-        </View>
-        <MaterialCommunityIcons name="chevron-right" size={22} color="#94a3b8" />
-      </Surface>
-    </TouchableOpacity>
-  );
-};
-
 export default function HomeScreen() {
   const { prescriptions } = usePrescriptions();
-  const theme = useTheme();
   const navigation = useNavigation<RootStackNavigationProp>();
   const { isAdFree, isLoading, purchaseRemoveAds } = useIap();
+  const { isDark, toggleTheme, colors } = useThemeMode();
 
   const latestPrescription = prescriptions && prescriptions.length > 0
     ? prescriptions[0]
     : null;
 
   const totalPrescriptions = prescriptions ? prescriptions.length : 0;
+  const uniqueDoctors = prescriptions ? new Set(prescriptions.map(p => p.doctorName)).size : 0;
+  const uniquePatients = prescriptions ? new Set(prescriptions.map(p => p.patientName)).size : 0;
 
-  const uniqueDoctors = prescriptions
-    ? new Set(prescriptions.map(p => p.doctorName)).size
-    : 0;
-
-  const uniquePatients = prescriptions
-    ? new Set(prescriptions.map(p => p.patientName)).size
-    : 0;
+  const FeatureCard = ({ title, icon, description, onPress }: FeatureCardProps) => (
+    <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
+      <Surface style={[styles.featureCard, { backgroundColor: colors.surface }]} elevation={1}>
+        <View style={[styles.featureIconContainer, { backgroundColor: colors.primaryBg }]}>
+          <MaterialCommunityIcons name={icon} size={26} color={colors.primary} />
+        </View>
+        <View style={styles.featureContent}>
+          <Text style={[styles.featureTitle, { color: colors.text }]}>{title}</Text>
+          <Text style={[styles.featureDescription, { color: colors.textSecondary }]}>{description}</Text>
+        </View>
+        <MaterialCommunityIcons name="chevron-right" size={24} color={colors.textTertiary} />
+      </Surface>
+    </TouchableOpacity>
+  );
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+    <ScrollView style={[styles.container, { backgroundColor: colors.background }]} showsVerticalScrollIndicator={false}>
       {/* Header */}
-      <Surface style={styles.header} elevation={0}>
+      <Surface style={[styles.header, { backgroundColor: colors.headerBg }]} elevation={0}>
         <View style={styles.headerBrand}>
           <View style={styles.headerLogo}>
             <Text style={styles.headerLogoText}>R</Text>
           </View>
           <Text style={styles.headerBrandName}>RECEITEX</Text>
+          <View style={{ flex: 1 }} />
+          <TouchableOpacity onPress={toggleTheme} style={styles.headerThemeToggle}>
+            <MaterialCommunityIcons
+              name={isDark ? 'weather-sunny' : 'weather-night'}
+              size={22}
+              color="rgba(255,255,255,0.9)"
+            />
+          </TouchableOpacity>
         </View>
         <Text style={styles.headerTitle}>Suas receitas, organizadas</Text>
         <Text style={styles.headerSubtitle}>
@@ -69,22 +70,22 @@ export default function HomeScreen() {
 
       {/* Stats */}
       <View style={styles.statsContainer}>
-        <Surface style={styles.statCard} elevation={1}>
-          <MaterialCommunityIcons name="prescription" size={22} color="#0E7C78" />
-          <Text style={styles.statValue}>{totalPrescriptions}</Text>
-          <Text style={styles.statLabel}>Receitas</Text>
+        <Surface style={[styles.statCard, { backgroundColor: colors.surface }]} elevation={1}>
+          <MaterialCommunityIcons name="prescription" size={24} color={colors.primary} />
+          <Text style={[styles.statValue, { color: colors.text }]}>{totalPrescriptions}</Text>
+          <Text style={[styles.statLabel, { color: colors.textSecondary }]}>Receitas</Text>
         </Surface>
 
-        <Surface style={styles.statCard} elevation={1}>
-          <MaterialCommunityIcons name="doctor" size={22} color="#0E7C78" />
-          <Text style={styles.statValue}>{uniqueDoctors}</Text>
-          <Text style={styles.statLabel}>Médicos</Text>
+        <Surface style={[styles.statCard, { backgroundColor: colors.surface }]} elevation={1}>
+          <MaterialCommunityIcons name="doctor" size={24} color={colors.primary} />
+          <Text style={[styles.statValue, { color: colors.text }]}>{uniqueDoctors}</Text>
+          <Text style={[styles.statLabel, { color: colors.textSecondary }]}>Médicos</Text>
         </Surface>
 
-        <Surface style={styles.statCard} elevation={1}>
-          <MaterialCommunityIcons name="account-group" size={22} color="#0E7C78" />
-          <Text style={styles.statValue}>{uniquePatients}</Text>
-          <Text style={styles.statLabel}>Pacientes</Text>
+        <Surface style={[styles.statCard, { backgroundColor: colors.surface }]} elevation={1}>
+          <MaterialCommunityIcons name="account-group" size={24} color={colors.primary} />
+          <Text style={[styles.statValue, { color: colors.text }]}>{uniquePatients}</Text>
+          <Text style={[styles.statLabel, { color: colors.textSecondary }]}>Pacientes</Text>
         </Surface>
       </View>
 
@@ -93,14 +94,16 @@ export default function HomeScreen() {
           activeOpacity={0.7}
           onPress={() => navigation.navigate('DetalheReceita', { prescriptionId: latestPrescription.id })}
         >
-          <Card style={styles.latestCard}>
+          <Card style={[styles.latestCard, { backgroundColor: colors.surface }]}>
             <Card.Content>
               <View style={styles.latestHeader}>
-                <Text style={styles.latestLabel}>Última receita</Text>
-                <MaterialCommunityIcons name="chevron-right" size={18} color="#0E7C78" />
+                <Text style={[styles.latestLabel, { color: colors.primary }]}>Última receita</Text>
+                <MaterialCommunityIcons name="chevron-right" size={18} color={colors.primary} />
               </View>
-              <Text style={styles.latestDoctor}>Dr(a). {latestPrescription.doctorName}</Text>
-              <Text style={styles.latestPatient}>{latestPrescription.patientName} — {latestPrescription.appointmentDate}</Text>
+              <Text style={[styles.latestDoctor, { color: colors.text }]}>Dr(a). {latestPrescription.doctorName}</Text>
+              <Text style={[styles.latestPatient, { color: colors.textSecondary }]}>
+                {latestPrescription.patientName} — {latestPrescription.appointmentDate}
+              </Text>
             </Card.Content>
           </Card>
         </TouchableOpacity>
@@ -108,7 +111,7 @@ export default function HomeScreen() {
 
       {!isAdFree && (
         <TouchableOpacity
-          style={styles.premiumCard}
+          style={[styles.premiumCard, { backgroundColor: colors.gold }]}
           onPress={purchaseRemoveAds}
           disabled={isLoading}
         >
@@ -120,7 +123,7 @@ export default function HomeScreen() {
         </TouchableOpacity>
       )}
 
-      <Text style={styles.sectionTitle}>AÇÕES RÁPIDAS</Text>
+      <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>AÇÕES RÁPIDAS</Text>
 
       <FeatureCard
         title="Adicionar receita"
@@ -144,7 +147,7 @@ export default function HomeScreen() {
       />
 
       <View style={styles.footer}>
-        <Text style={styles.footerText}>Receitex v0.4.0</Text>
+        <Text style={[styles.footerText, { color: colors.textTertiary }]}>Receitex v1.1.0</Text>
       </View>
     </ScrollView>
   );
@@ -153,16 +156,13 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F7F7',
   },
   header: {
     paddingHorizontal: 24,
     paddingTop: 28,
     paddingBottom: 32,
-    backgroundColor: '#0E7C78',
     borderBottomLeftRadius: 28,
     borderBottomRightRadius: 28,
-    marginBottom: 0,
   },
   headerBrand: {
     flexDirection: 'row',
@@ -170,36 +170,39 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   headerLogo: {
-    width: 34,
-    height: 34,
-    borderRadius: 8,
+    width: 36,
+    height: 36,
+    borderRadius: 9,
     backgroundColor: 'rgba(255,255,255,0.22)',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 10,
   },
   headerLogoText: {
-    fontSize: 18,
+    fontSize: 19,
     fontWeight: '800',
     color: 'white',
   },
   headerBrandName: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: '700',
     color: 'rgba(255,255,255,0.90)',
     letterSpacing: 1.2,
   },
+  headerThemeToggle: {
+    padding: 6,
+  },
   headerTitle: {
-    fontSize: 26,
+    fontSize: 28,
     fontWeight: '800',
     color: 'white',
-    lineHeight: 32,
+    lineHeight: 34,
     marginBottom: 8,
   },
   headerSubtitle: {
-    fontSize: 14,
+    fontSize: 15,
     color: 'rgba(255,255,255,0.80)',
-    lineHeight: 20,
+    lineHeight: 22,
   },
   statsContainer: {
     flexDirection: 'row',
@@ -212,28 +215,24 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 14,
+    paddingVertical: 16,
     paddingHorizontal: 8,
     margin: 4,
     borderRadius: 12,
-    backgroundColor: 'white',
   },
   statValue: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
     marginTop: 6,
-    color: '#1e293b',
   },
   statLabel: {
-    fontSize: 11,
-    color: '#64748b',
+    fontSize: 12,
     marginTop: 2,
   },
   latestCard: {
     marginHorizontal: 16,
     marginTop: 12,
     marginBottom: 4,
-    backgroundColor: 'white',
     borderRadius: 12,
     borderLeftWidth: 4,
     borderLeftColor: '#0E7C78',
@@ -245,25 +244,21 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   latestLabel: {
-    fontSize: 11,
-    color: '#0E7C78',
+    fontSize: 12,
     fontWeight: '700',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
   latestDoctor: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: 'bold',
-    color: '#1e293b',
   },
   latestPatient: {
-    fontSize: 13,
+    fontSize: 14,
     marginTop: 4,
-    color: '#64748b',
   },
   premiumCard: {
-    backgroundColor: '#FFD700',
-    paddingVertical: 14,
+    paddingVertical: 16,
     paddingHorizontal: 20,
     borderRadius: 12,
     marginHorizontal: 16,
@@ -279,32 +274,29 @@ const styles = StyleSheet.create({
   premiumText: {
     color: '#000',
     fontWeight: 'bold',
-    fontSize: 15,
+    fontSize: 16,
   },
   sectionTitle: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
     marginHorizontal: 16,
     marginTop: 24,
     marginBottom: 10,
-    color: '#64748b',
     letterSpacing: 1.0,
   },
   featureCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 14,
+    paddingVertical: 16,
     paddingHorizontal: 16,
     marginHorizontal: 16,
     marginBottom: 10,
     borderRadius: 12,
-    backgroundColor: 'white',
   },
   featureIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 10,
-    backgroundColor: '#E0F4F3',
+    width: 44,
+    height: 44,
+    borderRadius: 11,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 14,
@@ -313,13 +305,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   featureTitle: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: '600',
-    color: '#1e293b',
   },
   featureDescription: {
-    fontSize: 12,
-    color: '#64748b',
+    fontSize: 13,
     marginTop: 2,
   },
   footer: {
@@ -327,7 +317,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   footerText: {
-    color: '#94a3b8',
     fontSize: 12,
   },
 });

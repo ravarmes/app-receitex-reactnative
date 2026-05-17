@@ -8,6 +8,7 @@ import {
   StatusBar,
   StyleSheet,
   View,
+  TouchableOpacity,
 } from 'react-native';
 import mobileAds, {
   BannerAd,
@@ -16,8 +17,10 @@ import mobileAds, {
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Provider as PaperProvider } from 'react-native-paper';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { PrescriptionProvider } from './src/context/PrescriptionContext';
+import { ThemeProvider, useThemeMode } from './src/context/ThemeContext';
 import HomeScreen from './src/screens/HomeScreen';
 import AddPrescriptionScreen from './src/screens/AddPrescriptionScreen';
 import PrescriptionsListScreen from './src/screens/PrescriptionsListScreen';
@@ -27,15 +30,16 @@ import SplashScreen from './src/screens/SplashScreen';
 import adConfig from './src/utils/adConfig';
 import { IapProvider, useIap } from './src/contexts/IapContext';
 
+const Stack = createNativeStackNavigator();
+
 const AppBannerAd = () => {
   const { isAdFree } = useIap();
   if (isAdFree) return null;
 
-  const adUnitId = adConfig.getBannerAdId();
   return (
     <View style={styles.adContainer}>
       <BannerAd
-        unitId={adUnitId}
+        unitId={adConfig.getBannerAdId()}
         size={BannerAdSize.BANNER}
         requestOptions={{
           requestNonPersonalizedAdsOnly: true,
@@ -45,10 +49,9 @@ const AppBannerAd = () => {
   );
 };
 
-const Stack = createNativeStackNavigator();
-
-function App(): React.JSX.Element {
+function ThemedApp(): React.JSX.Element {
   const [splashVisible, setSplashVisible] = useState(true);
+  const { isDark, toggleTheme, colors, paperTheme } = useThemeMode();
 
   useEffect(() => {
     mobileAds()
@@ -58,11 +61,21 @@ function App(): React.JSX.Element {
       });
   }, []);
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#0E7C78" />
+  const ThemeToggleButton = () => (
+    <TouchableOpacity onPress={toggleTheme} style={styles.themeToggle}>
+      <MaterialCommunityIcons
+        name={isDark ? 'weather-sunny' : 'weather-night'}
+        size={22}
+        color="white"
+      />
+    </TouchableOpacity>
+  );
 
-      <PaperProvider>
+  return (
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.headerBg }]}>
+      <StatusBar barStyle="light-content" backgroundColor={colors.statusBar} />
+
+      <PaperProvider theme={paperTheme}>
         <PrescriptionProvider>
           <IapProvider>
             <NavigationContainer>
@@ -70,12 +83,13 @@ function App(): React.JSX.Element {
                 initialRouteName="Home"
                 screenOptions={{
                   headerStyle: {
-                    backgroundColor: '#0E7C78',
+                    backgroundColor: colors.headerBg,
                   },
                   headerTintColor: '#fff',
                   headerTitleStyle: {
                     fontWeight: 'bold',
                   },
+                  headerRight: () => <ThemeToggleButton />,
                 }}
               >
                 <Stack.Screen
@@ -113,7 +127,6 @@ function App(): React.JSX.Element {
 
             <AppBannerAd />
 
-            {/* Splash screen sobreposta até animação terminar */}
             {splashVisible && (
               <SplashScreen onFinish={() => setSplashVisible(false)} />
             )}
@@ -124,16 +137,26 @@ function App(): React.JSX.Element {
   );
 }
 
+function App(): React.JSX.Element {
+  return (
+    <ThemeProvider>
+      <ThemedApp />
+    </ThemeProvider>
+  );
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0E7C78',
   },
   adContainer: {
     width: '100%',
     alignItems: 'center',
-    backgroundColor: '#F5F7F7',
     paddingVertical: 5,
+  },
+  themeToggle: {
+    marginRight: 12,
+    padding: 4,
   },
 });
 
