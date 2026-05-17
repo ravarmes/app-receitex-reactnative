@@ -1,126 +1,130 @@
-# Quiz da Fé - Texto de Explicação do App
+# Receitex - Texto de Explicação do App
 
 ## Visão geral
 
-O **Quiz da Fé** é um aplicativo mobile desenvolvido em React Native para ajudar crianças, adolescentes e famílias a aprenderem sobre a Bíblia de um jeito leve, divertido e educativo. A proposta do app é transformar o estudo bíblico em uma experiência interativa e gamificada, tornando o aprendizado acessível para qualquer pessoa, independentemente da faixa etária ou do nível de conhecimento.
+O **Receitex** é um aplicativo mobile desenvolvido em React Native para ajudar o usuário a organizar e guardar as suas receitas médicas de forma prática e centralizada. A proposta do app é transformar o histórico de consultas, prescrições e medicamentos em um acervo pessoal acessível, estruturado e fácil de consultar a qualquer momento.
 
-Mais do que um jogo de perguntas e respostas, o Quiz da Fé reúne conteúdo bíblico estruturado, feedback educativo a cada questão e uma progressão de dificuldade que estimula o usuário a continuar aprendendo e evoluindo no seu conhecimento das Escrituras.
+Mais do que apenas armazenar documentos, o aplicativo oferece recursos para registrar médicos, pacientes, sintomas e categorias, além de gerar relatórios com estatísticas do histórico de saúde. Assim, o usuário consegue ter controle real sobre seu acompanhamento médico, com todas as informações importantes reunidas em um único lugar.
 
 ## Descrição do aplicativo
 
-O Quiz da Fé funciona como uma plataforma interativa de perguntas bíblicas. O usuário escolhe uma das cinco categorias temáticas disponíveis, seleciona o nível de dificuldade desejado e responde a dez perguntas aleatórias, cada uma com quatro alternativas de resposta.
+O Receitex funciona como um arquivo pessoal de receitas médicas. Dentro do app, o usuário pode cadastrar novas receitas, registrar o nome do médico e da especialidade, identificar o paciente, informar a data da consulta, descrever os sintomas e classificar por categorias. Também é possível fotografar ou importar uma imagem da receita física diretamente pelo aplicativo.
 
-Após cada resposta, o app apresenta feedback visual imediato — destacando em verde a alternativa correta e em vermelho a escolha incorreta — e exibe uma explicação educativa sobre o tema da questão. Ao final da rodada, o usuário recebe uma tela de resultado com estatísticas detalhadas: total de acertos, erros, percentual de aproveitamento e uma mensagem motivacional personalizada conforme o desempenho.
+Na tela inicial, o Receitex apresenta um painel com os principais números da coleção: total de receitas, médicos e pacientes cadastrados, além de um destaque para a última receita registrada. A navegação é simples e direta, com ações rápidas para adicionar receita, ver o histórico e consultar relatórios.
 
 ## Objetivo principal
 
-O principal objetivo do Quiz da Fé é oferecer ao usuário uma forma prática e envolvente de **conhecer, revisar e aprofundar o conteúdo bíblico**. O app foi pensado para pessoas que desejam aprender mais sobre a Bíblia, mas que preferem uma abordagem dinâmica e interativa em vez do estudo tradicional.
+O principal objetivo do Receitex é oferecer ao usuário um espaço pessoal para **guardar, organizar, consultar e acompanhar o histórico de receitas médicas**. O app foi pensado para pacientes, cuidadores e qualquer pessoa que precise manter o controle de consultas, prescrições e medicamentos de forma prática e confiável.
 
-Com cinco categorias temáticas e três níveis de dificuldade, o aplicativo atende tanto quem está dando os primeiros passos no conhecimento bíblico quanto quem já tem familiaridade com o conteúdo e quer se desafiar com questões mais profundas.
+Em vez de deixar receitas espalhadas em fotos, gavetas ou arquivos físicos, o Receitex centraliza tudo em um ambiente digital, intuitivo e bem organizado. Dessa forma, o aplicativo ajuda o usuário a construir um histórico médico pessoal completo, acessível a qualquer hora e com busca rápida.
 
 ## Problema que o app resolve
 
-O estudo bíblico muitas vezes é percebido como algo denso, formal ou pouco acessível, especialmente para crianças e jovens. Sem uma linguagem adequada e sem estímulo para o engajamento, o aprendizado fica limitado e o interesse se perde com o tempo.
+Muitas pessoas guardam receitas médicas de forma desorganizada: fotos no celular misturadas com outras imagens, papéis em locais diferentes, anotações avulsas sem contexto. Com o tempo, esse conteúdo fica difícil de encontrar, especialmente quando é necessário relembrar um medicamento prescrito, uma dosagem ou o nome de um especialista consultado.
 
-O Quiz da Fé resolve esse problema ao oferecer uma experiência gamificada que:
+O Receitex resolve esse problema ao reunir tudo em um único aplicativo, permitindo:
 
-- apresenta o conteúdo bíblico em formato de quiz, com linguagem clara e acessível;
-- organiza as perguntas em categorias temáticas para facilitar o aprendizado progressivo;
-- adapta o nível de exigência ao perfil do usuário por meio dos três graus de dificuldade;
-- reforça o aprendizado com explicações após cada resposta;
-- mantém a motivação com pontuação em tempo real e mensagens de incentivo ao final de cada rodada.
+- armazenar receitas médicas em um só lugar;
+- registrar o médico, a especialidade e o paciente;
+- anotar sintomas e categorizar os atendimentos;
+- fotografar ou importar a imagem da receita original;
+- localizar rapidamente qualquer receita por nome, data ou sintoma;
+- acompanhar estatísticas e o histórico de consultas ao longo do tempo.
 
 ## Principais funcionalidades
 
-### 1. Seleção de categoria
+### 1. Cadastro de receitas médicas
 
-O usuário escolhe entre cinco categorias temáticas para direcionar o foco do quiz:
+O usuário pode adicionar novas receitas de forma simples e estruturada, preenchendo:
 
-- **Antigo Testamento**: criação, patriarcas, reis e profetas;
-- **Novo Testamento**: Jesus, evangelhos e igreja primitiva;
-- **Personagens Bíblicos**: figuras de fé, coragem e propósito;
-- **Citações Bíblicas**: versos e referências para aprender e memorizar;
-- **Questões Gerais**: temas variados da Bíblia.
+- nome do médico e especialidade;
+- nome do paciente;
+- data da consulta;
+- descrição dos sintomas;
+- categorias ou tags relacionadas aos sintomas.
 
-Cada categoria é apresentada com ícone visual, cor própria e descrição resumida, tornando a escolha intuitiva e atrativa.
+O fluxo é rápido e organizado, garantindo que cada receita tenha contexto suficiente para ser facilmente identificada depois.
 
-### 2. Níveis de dificuldade
+### 2. Foto da receita
 
-Após escolher a categoria, o usuário seleciona um dos três níveis disponíveis:
+Na tela de cadastro, o usuário pode fotografar a receita física com a câmera do celular ou importar uma imagem diretamente da galeria. Isso garante que o documento original fique vinculado ao registro digital, facilitando a consulta e o compartilhamento com outros profissionais de saúde.
 
-- **Fácil**: perguntas sobre nomes, eventos principais e conhecimentos básicos — ideal para iniciantes;
-- **Médio**: questões de interpretação, detalhes e contexto — para quem já conhece o básico;
-- **Difícil**: perguntas com referências específicas, detalhes aprofundados e nomes menos conhecidos — para quem quer se desafiar.
+### 3. Edição e exclusão
 
-Essa estrutura garante que o app seja inclusivo e progressivo, atendendo diferentes perfis de conhecimento.
+As receitas salvas podem ser editadas a qualquer momento, permitindo atualizar informações, corrigir dados ou adicionar novos detalhes. O app também oferece exclusão com confirmação, trazendo mais controle e segurança sobre o histórico registrado.
 
-### 3. Quiz com perguntas aleatórias
+### 4. Organização por categorias
 
-Cada rodada apresenta dez perguntas selecionadas aleatoriamente da categoria e do nível escolhidos. As perguntas possuem quatro alternativas de resposta, sendo apenas uma correta. A aleatoriedade garante que cada partida seja uma experiência nova, estimulando o usuário a jogar novamente e ampliar seu aprendizado.
+Cada receita pode receber uma ou mais categorias relacionadas aos sintomas ou condições tratadas, como hipertensão, dor de cabeça, alergia, dermatologia ou cardiologia. Esse recurso facilita a organização temática do histórico e melhora a busca por atendimentos específicos.
 
-### 4. Feedback visual e educativo
+### 5. Busca e filtros avançados
 
-Após responder cada questão, o app destaca visualmente a alternativa correta (em verde) e a resposta incorreta do usuário (em vermelho), com as demais alternativas desativadas. Em seguida, exibe uma explicação educativa sobre o tema da pergunta, reforçando o conteúdo e incentivando a reflexão.
+O Receitex oferece mecanismos de busca e filtragem para localizar receitas com facilidade. O usuário pode pesquisar por:
 
-### 5. Pontuação em tempo real
+- nome do médico;
+- nome do paciente;
+- data da consulta;
+- sintomas descritos;
+- categoria.
 
-Durante o quiz, um contador de pontos é exibido no topo da tela e atualizado a cada acerto. Esse recurso cria uma experiência mais dinâmica e competitiva, incentivando o usuário a melhorar seu desempenho a cada rodada.
+Os filtros rápidos disponíveis na tela de listagem permitem navegar e segmentar o histórico de forma ágil.
 
-### 6. Barra de progresso
+### 6. Visualização da coleção
 
-Uma barra de progresso visual, acompanhada de um contador de perguntas (por exemplo, "3 de 10"), mantém o usuário informado sobre o andamento da rodada. Esse recurso ajuda a manter o ritmo e evita que o jogador se perca no fluxo do quiz.
+As receitas ficam disponíveis em uma lista organizada e com visualização clara, exibindo o nome do médico, especialidade, paciente, data, resumo dos sintomas e as categorias associadas. O usuário pode abrir qualquer registro, explorar os detalhes e interagir com o conteúdo de maneira prática.
 
-### 7. Tela de resultado com estatísticas
+### 7. Relatórios e estatísticas
 
-Ao concluir a rodada, o usuário acessa uma tela de resultado completa, com:
+Um dos principais diferenciais do app é a área de relatórios, que apresenta informações consolidadas sobre o histórico de consultas, como:
 
-- total de perguntas respondidas;
-- número de acertos (com destaque em verde);
-- número de erros;
-- percentual de aproveitamento.
+- total de receitas cadastradas;
+- total de médicos e pacientes registrados;
+- período dos registros, do mais antigo ao mais recente;
+- médicos mais frequentes, com ranking visual;
+- pacientes com mais consultas registradas;
+- categorias de sintomas mais recorrentes;
+- receitas mais recentes.
 
-Acompanhando as estatísticas, uma mensagem motivacional personalizada é exibida conforme o desempenho: incentivo para quem errou mais, elogio para quem foi bem e parabéns especiais para quem acertou quase tudo. O usuário pode jogar novamente com a mesma configuração ou voltar ao início para escolher outra categoria ou dificuldade.
+Esses dados ajudam o usuário a enxergar padrões no seu histórico de saúde e a ter uma visão mais completa do acompanhamento médico ao longo do tempo.
 
-### 8. Tutorial "Como funciona"
+### 8. Painel inicial com resumo
 
-Para novos usuários, o app oferece uma tela explicativa com quatro passos ilustrados, descrevendo o fluxo completo: escolher a categoria, selecionar a dificuldade, responder o quiz e conferir o resultado. Essa funcionalidade reduz a curva de aprendizado e torna a experiência acessível para qualquer perfil de usuário.
+Na tela principal, o app exibe um painel com os principais indicadores da coleção: total de receitas, médicos e pacientes cadastrados. Quando há receitas registradas, o app também destaca a última consulta, criando uma experiência mais dinâmica e informativa logo na abertura. Esse detalhe reforça o propósito do produto e aproxima o usuário do seu histórico de saúde.
 
 ### 9. Versão sem anúncios
 
-O aplicativo conta com um modelo de monetização baseado em anúncios e oferece a opção de **compra única** para remover as propagandas. Com isso, o usuário pode escolher entre a versão gratuita com anúncios ou uma experiência mais limpa e sem interrupções, apoiando o desenvolvimento do app com um pagamento simples e definitivo.
+O aplicativo possui um modelo de monetização com anúncios e também oferece uma opção de **compra única** para remover propagandas. Assim, o usuário pode escolher entre utilizar a versão com anúncios ou desbloquear uma experiência mais limpa, sem interrupções.
 
-## Diferenciais do Quiz da Fé
+## Diferenciais do Receitex
 
 Entre os principais diferenciais do app, destacam-se:
 
-- foco em aprendizado bíblico de forma lúdica, acessível e familiar;
-- mais de 300 perguntas organizadas em cinco categorias temáticas;
-- três níveis de dificuldade que atendem desde iniciantes até conhecedores avançados;
-- feedback educativo após cada resposta, transformando o erro em aprendizado;
-- perguntas aleatórias a cada rodada, garantindo replayability e variedade;
-- interface moderna, limpa e intuitiva, adequada para todas as faixas etárias;
-- arquitetura escalável, permitindo a adição de novas categorias e perguntas com facilidade.
+- foco no acompanhamento médico pessoal e na organização da saúde;
+- registro completo com médico, paciente, sintomas, categorias e foto da receita;
+- interface moderna, limpa e fácil de usar;
+- armazenamento local das informações no dispositivo;
+- busca e filtros eficientes para localizar qualquer receita rapidamente;
+- relatórios que transformam um histórico de consultas em informação útil e visual.
 
 ## Público-alvo
 
-O Quiz da Fé pode ser utilizado por diferentes perfis de pessoas, especialmente:
+O Receitex pode ser utilizado por diferentes perfis de pessoas, especialmente:
 
-- crianças e adolescentes que frequentam igrejas, escolas bíblicas ou grupos de jovens;
-- famílias que desejam aprender e se divertir juntas com conteúdo bíblico;
-- professores e líderes religiosos que buscam ferramentas dinâmicas para ensino;
-- adultos que desejam revisar ou aprofundar seu conhecimento das Escrituras;
-- qualquer pessoa com curiosidade sobre a Bíblia e interesse por quiz e jogos educativos.
+- pacientes que precisam manter o controle de receitas e medicamentos prescritos;
+- cuidadores que acompanham a saúde de familiares ou dependentes;
+- pessoas com histórico de condições crônicas e múltiplos especialistas;
+- qualquer pessoa que queira ter o seu histórico médico organizado e acessível no celular.
 
 ## Tom e proposta de valor
 
-O app transmite uma proposta simples e direta: **aprender a Bíblia brincando, com leveza e propósito**. Sua proposta de valor está em oferecer um ambiente em que o conhecimento bíblico deixa de ser algo distante ou formal e passa a fazer parte de uma experiência interativa, divertida e significativa.
+O app transmite uma proposta simples e direta: **suas receitas, organizadas**. Sua proposta de valor está em oferecer um ambiente digital em que consultas, prescrições e informações de saúde deixam de ser registros soltos e passam a compor um histórico estruturado, pesquisável e sempre disponível.
 
-O Quiz da Fé une fé, educação e entretenimento em uma única experiência. Ele desafia o usuário a testar o que sabe, aprender com os erros e descobrir, rodada após rodada, o quanto a Bíblia tem a oferecer a quem está disposto a conhecê-la com curiosidade e alegria.
+O Receitex une praticidade, organização e controle em uma única experiência. Ele ajuda o usuário a registrar cada consulta de forma completa, localizar qualquer receita em segundos e enxergar, por meio dos relatórios, o seu padrão de acompanhamento médico ao longo do tempo.
 
 ## Texto-base resumido para materiais de divulgação
 
-O Quiz da Fé é um aplicativo mobile criado para crianças, adolescentes e famílias aprenderem sobre a Bíblia de um jeito leve, divertido e educativo. Com mais de 300 perguntas distribuídas em cinco categorias temáticas — Antigo Testamento, Novo Testamento, Personagens Bíblicos, Citações Bíblicas e Questões Gerais —, o app oferece três níveis de dificuldade para atender desde iniciantes até conhecedores avançados. Cada rodada apresenta dez perguntas aleatórias com quatro alternativas, feedback visual imediato e explicações educativas após cada resposta. Ao final, o usuário confere seus acertos, erros e percentual de aproveitamento, com mensagens motivacionais personalizadas. Com interface moderna e proposta acessível, o Quiz da Fé transforma o estudo bíblico em uma experiência interativa, progressiva e inspiradora.
+O Receitex é um aplicativo mobile criado para quem precisa organizar receitas médicas, histórico de consultas e informações de saúde de forma prática e centralizada. Com ele, o usuário pode cadastrar receitas, registrar o médico e a especialidade, identificar o paciente, descrever sintomas, categorizar os atendimentos e fotografar a receita original diretamente pelo celular. O app também oferece busca com filtros por nome, data e sintoma, além de relatórios com estatísticas como médicos mais frequentes, categorias mais recorrentes e período de consultas. Com interface moderna e proposta direta, o Receitex transforma um histórico médico disperso em uma coleção organizada, acessível e fácil de consultar a qualquer hora.
 
 ## Texto-base mais envolvente para vídeo, infográfico ou podcast
 
-Aprender sobre a Bíblia pode ser uma experiência muito mais divertida do que parece. O Quiz da Fé surgiu com essa missão: levar crianças, adolescentes e famílias a descobrirem, revisitarem e aprofundarem o conhecimento bíblico por meio de um jogo interativo, acessível e cheio de significado. No app, o usuário escolhe entre cinco categorias temáticas — do Antigo ao Novo Testamento, passando por personagens, citações e questões gerais —, seleciona o nível de dificuldade que combina com o seu momento e enfrenta dez perguntas aleatórias, cada uma com quatro alternativas. A cada resposta, o app mostra o que está certo, o que está errado e ainda explica o porquê, transformando cada erro em uma oportunidade de aprender. No final, estatísticas completas e mensagens de incentivo motivam o usuário a jogar de novo, tentar um nível mais difícil ou explorar uma nova categoria. Mais de 300 perguntas, três níveis de desafio e uma proposta que une fé, educação e entretenimento. O Quiz da Fé é para quem quer conhecer a Bíblia jogando — e descobrir, no caminho, o quanto ela tem a ensinar.
+Você sabe exatamente onde estão as suas receitas médicas? Para a maioria das pessoas, esse conteúdo fica espalhado em fotos no celular, papéis em gavetas e anotações soltas que se perdem com o tempo. O Receitex surge para mudar isso. O aplicativo permite que cada usuário monte o seu próprio arquivo pessoal de receitas médicas, com organização simples e consulta rápida. Nele, é possível cadastrar consultas, registrar médicos e especialidades, identificar pacientes, descrever sintomas, categorizar atendimentos e até fotografar a receita original. Com busca por nome, data ou sintoma e relatórios que mostram os médicos mais frequentes, as categorias mais recorrentes e o histórico ao longo do tempo, o Receitex transforma informações de saúde espalhadas em um histórico organizado, completo e sempre acessível. É um app pensado para quem quer ter controle real sobre o próprio acompanhamento médico, sem complicação.
