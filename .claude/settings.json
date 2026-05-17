@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(cd \"c:\\\\GitHub\\\\app-receitex-reactnative\"; Start-Process powershell -ArgumentList '-NoExit', '-Command', 'cd \"c:\\\\GitHub\\\\app-receitex-reactnative\"; npx react-native start --reset-cache' -WindowStyle Normal)",
+      "PowerShell(adb shell am start -n br.com.vargascode.receitex/com.receitex.MainActivity 2>&1)",
+      "PowerShell(adb shell monkey -p br.com.vargascode.receitex -c android.intent.category.LAUNCHER 1 2>&1)",
+      "PowerShell(Start-Process powershell -ArgumentList \"-NoExit\", \"-Command\", \"cd 'c:\\\\GitHub\\\\app-receitex-reactnative'; npx react-native start --port 8082 --reset-cache\")"
+    ]
+  }
+}

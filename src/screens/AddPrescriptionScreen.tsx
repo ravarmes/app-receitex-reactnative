@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, TextInput, Platform, Keyboard, KeyboardAvoidingView, Alert, Image, TouchableOpacity, Modal, PermissionsAndroid } from 'react-native';
+import {
+  View, StyleSheet, ScrollView, TextInput, Platform, Keyboard,
+  KeyboardAvoidingView, Alert, Image, TouchableOpacity, Modal, PermissionsAndroid,
+} from 'react-native';
 import { Button, Text, Surface, Chip, Card, Divider } from 'react-native-paper';
 import { usePrescriptions } from '../context/PrescriptionContext';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { launchCamera, launchImageLibrary, type ImagePickerResponse } from 'react-native-image-picker';
+import { useThemeMode } from '../context/ThemeContext';
 
 export default function AddPrescriptionScreen() {
   const route = useRoute();
   const navigation = useNavigation();
   const { addPrescription, updatePrescription, getPrescriptionById } = usePrescriptions();
+  const { colors } = useThemeMode();
 
   const editId = (route.params as any)?.prescriptionId as number | undefined;
   const isEditing = !!editId;
@@ -24,7 +29,6 @@ export default function AddPrescriptionScreen() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
-  // Date picker state – default to today
   const today = new Date();
   const [pickerDay, setPickerDay] = useState(today.getDate());
   const [pickerMonth, setPickerMonth] = useState(today.getMonth() + 1);
@@ -47,7 +51,6 @@ export default function AddPrescriptionScreen() {
   ];
   const years = Array.from({ length: 20 }, (_, i) => today.getFullYear() - 5 + i);
 
-  // Populate fields when editing
   useEffect(() => {
     if (existingPrescription) {
       setDoctorName(existingPrescription.doctorName);
@@ -59,26 +62,8 @@ export default function AddPrescriptionScreen() {
     }
   }, [existingPrescription?.id]);
 
-  const handleDoctorNameChange = (value: string) => {
-    setDoctorName(value);
-  };
-
-  const handlePatientNameChange = (value: string) => {
-    setPatientName(value);
-  };
-
-  const handleSymptomDescriptionChange = (value: string) => {
-    setSymptomDescription(value);
-  };
-
-  const handleCategoriesChange = (value: string) => {
-    setSymptomCategories(value);
-  };
-
   const handleSubmit = async () => {
-    if (!doctorName.trim() || !patientName.trim()) {
-      return;
-    }
+    if (!doctorName.trim() || !patientName.trim()) return;
 
     const categoriesArray = symptomCategories
       .split(',')
@@ -103,9 +88,7 @@ export default function AddPrescriptionScreen() {
           navigation.goBack();
         }, 1500);
       } else {
-        await addPrescription({
-          ...prescriptionData,
-        });
+        await addPrescription(prescriptionData);
         setShowSuccess(true);
         setTimeout(() => {
           setShowSuccess(false);
@@ -138,10 +121,7 @@ export default function AddPrescriptionScreen() {
           },
         );
         if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-          Alert.alert(
-            'Permissão negada',
-            'Sem permissão de câmera não é possível tirar fotos. Habilite nas configurações do dispositivo.',
-          );
+          Alert.alert('Permissão negada', 'Sem permissão de câmera não é possível tirar fotos.');
           return;
         }
       } catch (err) {
@@ -151,22 +131,11 @@ export default function AddPrescriptionScreen() {
     }
 
     launchCamera(
-      {
-        mediaType: 'photo',
-        quality: 0.8,
-        saveToPhotos: false,
-        includeBase64: false,
-        maxHeight: 2000,
-        maxWidth: 2000,
-      },
+      { mediaType: 'photo', quality: 0.8, saveToPhotos: false, includeBase64: false, maxHeight: 2000, maxWidth: 2000 },
       (response: ImagePickerResponse) => {
         if (response.didCancel) return;
         if (response.errorCode) {
-          Alert.alert(
-            'Erro ao abrir câmera',
-            response.errorMessage ||
-              'Não foi possível abrir a câmera. Verifique as permissões nas configurações do dispositivo.',
-          );
+          Alert.alert('Erro ao abrir câmera', response.errorMessage || 'Verifique as permissões.');
           return;
         }
         const uri = response.assets?.[0]?.uri;
@@ -182,178 +151,141 @@ export default function AddPrescriptionScreen() {
     setShowDatePicker(false);
   };
 
-  const renderCategoryChips = () => {
-    if (!symptomCategories) return null;
+  const inputStyle = [
+    styles.nativeInput,
+    { backgroundColor: colors.inputBg, borderColor: colors.inputBorder, color: colors.inputText },
+  ];
 
-    return (
-      <View style={styles.chipContainer}>
-        {symptomCategories
-          .split(',')
-          .map(cat => cat.trim())
-          .filter(cat => cat !== '')
-          .map((cat, index) => (
-            <Chip
-              key={index}
-              style={styles.chip}
-              textStyle={styles.chipText}
-            >
-              {cat}
-            </Chip>
-          ))}
-      </View>
-    );
-  };
+  const inputWithIconStyle = [
+    styles.inputWithIcon,
+    { backgroundColor: colors.inputBg, borderColor: colors.inputBorder },
+  ];
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      style={{ flex: 1 }}
-    >
-      <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
+      <ScrollView style={[styles.container, { backgroundColor: colors.background }]} keyboardShouldPersistTaps="handled">
         {showSuccess && (
-          <Card style={styles.successCard}>
+          <Card style={[styles.successCard, { backgroundColor: colors.successBg }]}>
             <Card.Content style={styles.successContent}>
-              <MaterialCommunityIcons name="check-circle" size={24} color="#10b981" />
-              <Text style={styles.successText}>
+              <MaterialCommunityIcons name="check-circle" size={26} color={colors.success} />
+              <Text style={[styles.successText, { color: colors.successText }]}>
                 {isEditing ? 'Receita atualizada com sucesso!' : 'Receita adicionada com sucesso!'}
               </Text>
             </Card.Content>
           </Card>
         )}
 
-        <Surface style={styles.form} elevation={2}>
-          <Text style={styles.formTitle}>{isEditing ? 'Editar Receita' : 'Nova Receita'}</Text>
-          <Divider style={styles.divider} />
+        <Surface style={[styles.form, { backgroundColor: colors.surface }]} elevation={2}>
+          <Text style={[styles.formTitle, { color: colors.text }]}>
+            {isEditing ? 'Editar Receita' : 'Nova Receita'}
+          </Text>
+          <Divider style={[styles.divider, { backgroundColor: colors.border }]} />
 
           {/* Photo section */}
           <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Foto da Receita</Text>
+            <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Foto da Receita</Text>
             {photoURI ? (
               <View style={styles.photoPreviewContainer}>
                 <Image source={{ uri: photoURI }} style={styles.photoPreview} resizeMode="cover" />
                 <TouchableOpacity style={styles.removePhotoButton} onPress={() => setPhotoURI('')}>
-                  <MaterialCommunityIcons name="close-circle" size={24} color="#ef4444" />
+                  <MaterialCommunityIcons name="close-circle" size={26} color={colors.danger} />
                 </TouchableOpacity>
               </View>
             ) : null}
             <View style={styles.photoButtonsContainer}>
-              <TouchableOpacity
-                style={styles.photoButton}
-                onPress={handleTakePhoto}
-              >
-                <MaterialCommunityIcons name="camera" size={28} color="#0E7C78" />
-                <Text style={styles.photoButtonText}>Tirar foto</Text>
+              <TouchableOpacity style={[styles.photoButton, { borderColor: colors.border, backgroundColor: colors.inputBg }]} onPress={handleTakePhoto}>
+                <MaterialCommunityIcons name="camera" size={30} color={colors.primary} />
+                <Text style={[styles.photoButtonText, { color: colors.primary }]}>Tirar foto</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={styles.photoButton}
+                style={[styles.photoButton, { borderColor: colors.border, backgroundColor: colors.inputBg }]}
                 onPress={() => {
-                  launchImageLibrary(
-                    { mediaType: 'photo', quality: 0.8 },
-                    (response: ImagePickerResponse) => {
-                      if (response.didCancel || response.errorCode) return;
-                      const uri = response.assets?.[0]?.uri;
-                      if (uri) setPhotoURI(uri);
-                    },
-                  );
+                  launchImageLibrary({ mediaType: 'photo', quality: 0.8 }, (response: ImagePickerResponse) => {
+                    if (response.didCancel || response.errorCode) return;
+                    const uri = response.assets?.[0]?.uri;
+                    if (uri) setPhotoURI(uri);
+                  });
                 }}
               >
-                <MaterialCommunityIcons name="image-multiple" size={28} color="#0E7C78" />
-                <Text style={styles.photoButtonText}>Galeria</Text>
+                <MaterialCommunityIcons name="image-multiple" size={30} color={colors.primary} />
+                <Text style={[styles.photoButtonText, { color: colors.primary }]}>Galeria</Text>
               </TouchableOpacity>
             </View>
           </View>
 
           <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Médico</Text>
-            <View style={styles.inputWithIcon}>
-              <MaterialCommunityIcons name="doctor" size={24} color="#0E7C78" style={styles.inputIcon} />
+            <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Médico</Text>
+            <View style={inputWithIconStyle}>
+              <MaterialCommunityIcons name="doctor" size={26} color={colors.primary} style={styles.inputIcon} />
               <TextInput
-                style={[styles.nativeInput, styles.inputWithIconField]}
+                style={[styles.nativeInput, styles.inputWithIconField, { color: colors.inputText, borderWidth: 0 }]}
                 placeholder="Nome do médico"
-                onChangeText={handleDoctorNameChange}
+                placeholderTextColor={colors.inputPlaceholder}
+                onChangeText={setDoctorName}
                 value={doctorName}
                 autoCapitalize="words"
-                keyboardType="default"
-                textContentType="none"
                 autoCorrect={false}
               />
             </View>
           </View>
 
           <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Paciente</Text>
-            <View style={styles.inputWithIcon}>
-              <MaterialCommunityIcons name="account" size={24} color="#0E7C78" style={styles.inputIcon} />
+            <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Paciente</Text>
+            <View style={inputWithIconStyle}>
+              <MaterialCommunityIcons name="account" size={26} color={colors.primary} style={styles.inputIcon} />
               <TextInput
-                style={[styles.nativeInput, styles.inputWithIconField]}
+                style={[styles.nativeInput, styles.inputWithIconField, { color: colors.inputText, borderWidth: 0 }]}
                 placeholder="Nome do paciente"
-                onChangeText={handlePatientNameChange}
+                placeholderTextColor={colors.inputPlaceholder}
+                onChangeText={setPatientName}
                 value={patientName}
                 autoCapitalize="words"
-                keyboardType="default"
-                textContentType="none"
                 autoCorrect={false}
               />
             </View>
           </View>
 
           <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Data da Consulta</Text>
-            <TouchableOpacity
-              style={styles.inputWithIcon}
-              onPress={() => setShowDatePicker(true)}
-              activeOpacity={0.7}
-            >
-              <MaterialCommunityIcons name="calendar" size={24} color="#0E7C78" style={styles.inputIcon} />
+            <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Data da Consulta</Text>
+            <TouchableOpacity style={inputWithIconStyle} onPress={() => setShowDatePicker(true)} activeOpacity={0.7}>
+              <MaterialCommunityIcons name="calendar" size={26} color={colors.primary} style={styles.inputIcon} />
               <Text style={[
                 styles.datePickerText,
-                !appointmentDate && styles.datePickerPlaceholder,
+                { color: appointmentDate ? colors.inputText : colors.inputPlaceholder },
               ]}>
                 {appointmentDate || 'DD/MM/AAAA'}
               </Text>
-              <MaterialCommunityIcons name="chevron-down" size={20} color="#94a3b8" style={{ paddingRight: 10 }} />
+              <MaterialCommunityIcons name="chevron-down" size={20} color={colors.textTertiary} style={{ paddingRight: 10 }} />
             </TouchableOpacity>
           </View>
 
           {/* Date Picker Modal */}
-          <Modal
-            visible={showDatePicker}
-            transparent={true}
-            animationType="slide"
-            onRequestClose={() => setShowDatePicker(false)}
-          >
-            <TouchableOpacity
-              style={styles.dateModalBackdrop}
-              activeOpacity={1}
-              onPress={() => setShowDatePicker(false)}
-            />
-            <View style={styles.dateModalContainer}>
-              <View style={styles.dateModalHeader}>
+          <Modal visible={showDatePicker} transparent animationType="slide" onRequestClose={() => setShowDatePicker(false)}>
+            <TouchableOpacity style={styles.dateModalBackdrop} activeOpacity={1} onPress={() => setShowDatePicker(false)} />
+            <View style={[styles.dateModalContainer, { backgroundColor: colors.surface }]}>
+              <View style={[styles.dateModalHeader, { borderBottomColor: colors.border }]}>
                 <TouchableOpacity onPress={() => setShowDatePicker(false)}>
-                  <Text style={styles.dateModalCancel}>Cancelar</Text>
+                  <Text style={[styles.dateModalCancel, { color: colors.textSecondary }]}>Cancelar</Text>
                 </TouchableOpacity>
-                <Text style={styles.dateModalTitle}>Selecionar Data</Text>
+                <Text style={[styles.dateModalTitle, { color: colors.text }]}>Selecionar Data</Text>
                 <TouchableOpacity onPress={confirmDatePicker}>
-                  <Text style={styles.dateModalConfirm}>Confirmar</Text>
+                  <Text style={[styles.dateModalConfirm, { color: colors.primary }]}>Confirmar</Text>
                 </TouchableOpacity>
               </View>
               <View style={styles.datePickerColumns}>
-                {/* Day column */}
                 <View style={styles.datePickerColumn}>
-                  <Text style={styles.datePickerColumnLabel}>Dia</Text>
+                  <Text style={[styles.datePickerColumnLabel, { color: colors.textTertiary }]}>Dia</Text>
                   <ScrollView showsVerticalScrollIndicator={false} style={styles.datePickerScroll}>
                     {days.map(d => (
                       <TouchableOpacity
                         key={d}
-                        style={[
-                          styles.datePickerItem,
-                          pickerDay === d && styles.datePickerItemSelected,
-                        ]}
+                        style={[styles.datePickerItem, pickerDay === d && { backgroundColor: colors.chipBg }]}
                         onPress={() => setPickerDay(d)}
                       >
                         <Text style={[
                           styles.datePickerItemText,
-                          pickerDay === d && styles.datePickerItemTextSelected,
+                          { color: colors.text },
+                          pickerDay === d && { color: colors.chipText, fontWeight: '700' },
                         ]}>
                           {String(d).padStart(2, '0')}
                         </Text>
@@ -361,22 +293,19 @@ export default function AddPrescriptionScreen() {
                     ))}
                   </ScrollView>
                 </View>
-                {/* Month column */}
                 <View style={[styles.datePickerColumn, { flex: 2 }]}>
-                  <Text style={styles.datePickerColumnLabel}>Mês</Text>
+                  <Text style={[styles.datePickerColumnLabel, { color: colors.textTertiary }]}>Mês</Text>
                   <ScrollView showsVerticalScrollIndicator={false} style={styles.datePickerScroll}>
                     {months.map(m => (
                       <TouchableOpacity
                         key={m.value}
-                        style={[
-                          styles.datePickerItem,
-                          pickerMonth === m.value && styles.datePickerItemSelected,
-                        ]}
+                        style={[styles.datePickerItem, pickerMonth === m.value && { backgroundColor: colors.chipBg }]}
                         onPress={() => setPickerMonth(m.value)}
                       >
                         <Text style={[
                           styles.datePickerItemText,
-                          pickerMonth === m.value && styles.datePickerItemTextSelected,
+                          { color: colors.text },
+                          pickerMonth === m.value && { color: colors.chipText, fontWeight: '700' },
                         ]}>
                           {m.label}
                         </Text>
@@ -384,22 +313,19 @@ export default function AddPrescriptionScreen() {
                     ))}
                   </ScrollView>
                 </View>
-                {/* Year column */}
                 <View style={styles.datePickerColumn}>
-                  <Text style={styles.datePickerColumnLabel}>Ano</Text>
+                  <Text style={[styles.datePickerColumnLabel, { color: colors.textTertiary }]}>Ano</Text>
                   <ScrollView showsVerticalScrollIndicator={false} style={styles.datePickerScroll}>
                     {years.map(y => (
                       <TouchableOpacity
                         key={y}
-                        style={[
-                          styles.datePickerItem,
-                          pickerYear === y && styles.datePickerItemSelected,
-                        ]}
+                        style={[styles.datePickerItem, pickerYear === y && { backgroundColor: colors.chipBg }]}
                         onPress={() => setPickerYear(y)}
                       >
                         <Text style={[
                           styles.datePickerItemText,
-                          pickerYear === y && styles.datePickerItemTextSelected,
+                          { color: colors.text },
+                          pickerYear === y && { color: colors.chipText, fontWeight: '700' },
                         ]}>
                           {y}
                         </Text>
@@ -412,47 +338,58 @@ export default function AddPrescriptionScreen() {
           </Modal>
 
           <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Descrição dos Sintomas</Text>
+            <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Descrição dos Sintomas</Text>
             <TextInput
-              style={[styles.nativeInput, styles.multilineInput]}
+              style={[inputStyle, styles.multilineInput]}
               placeholder="Descreva os sintomas relatados..."
-              onChangeText={handleSymptomDescriptionChange}
+              placeholderTextColor={colors.inputPlaceholder}
+              onChangeText={setSymptomDescription}
               value={symptomDescription}
-              multiline={true}
+              multiline
               autoCapitalize="sentences"
-              keyboardType="default"
-              textContentType="none"
               autoCorrect={false}
             />
           </View>
 
           <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Categorias de Sintomas</Text>
-            <View style={styles.inputWithIcon}>
-              <MaterialCommunityIcons name="tag-multiple" size={24} color="#0E7C78" style={styles.inputIcon} />
+            <Text style={[styles.inputLabel, { color: colors.textSecondary }]}>Categorias de Sintomas</Text>
+            <View style={inputWithIconStyle}>
+              <MaterialCommunityIcons name="tag-multiple" size={26} color={colors.primary} style={styles.inputIcon} />
               <TextInput
-                style={[styles.nativeInput, styles.inputWithIconField, { height: 90, textAlignVertical: 'top', paddingTop: 10 }]}
+                style={[styles.nativeInput, styles.inputWithIconField, { color: colors.inputText, borderWidth: 0, height: 90, textAlignVertical: 'top', paddingTop: 10 }]}
                 placeholder="Ex: dor de cabeça, febre, alergia (separadas por vírgula)"
-                onChangeText={handleCategoriesChange}
+                placeholderTextColor={colors.inputPlaceholder}
+                onChangeText={setSymptomCategories}
                 value={symptomCategories}
                 autoCapitalize="none"
-                keyboardType="default"
-                textContentType="none"
                 autoCorrect={false}
-                multiline={true}
+                multiline
               />
             </View>
           </View>
 
-          {renderCategoryChips()}
+          {symptomCategories ? (
+            <View style={styles.chipContainer}>
+              {symptomCategories
+                .split(',')
+                .map(cat => cat.trim())
+                .filter(cat => cat !== '')
+                .map((cat, index) => (
+                  <Chip key={index} style={[styles.chip, { backgroundColor: colors.chipBg }]} textStyle={{ color: colors.chipText }}>
+                    {cat}
+                  </Chip>
+                ))}
+            </View>
+          ) : null}
 
           <Button
             mode="contained"
             onPress={handleSubmit}
             style={styles.submitButton}
             labelStyle={styles.buttonLabel}
+            contentStyle={styles.buttonContent}
             disabled={!doctorName.trim() || !patientName.trim()}
-            icon={({size, color}) => (
+            icon={({ size, color }) => (
               <MaterialCommunityIcons name="check" size={size} color={color} />
             )}
           >
@@ -461,9 +398,9 @@ export default function AddPrescriptionScreen() {
         </Surface>
 
         {!isEditing && (
-          <View style={styles.tipContainer}>
-            <MaterialCommunityIcons name="lightbulb-outline" size={20} color="#0E7C78" />
-            <Text style={styles.tipText}>
+          <View style={[styles.tipContainer, { backgroundColor: colors.tipBg, borderColor: colors.tipBorder }]}>
+            <MaterialCommunityIcons name="lightbulb-outline" size={22} color={colors.primary} />
+            <Text style={[styles.tipText, { color: colors.tipText }]}>
               Dica: Inclua o máximo de detalhes para facilitar a busca futura.
             </Text>
           </View>
@@ -476,32 +413,27 @@ export default function AddPrescriptionScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F7F7',
   },
   form: {
     margin: 16,
     padding: 20,
     borderRadius: 16,
-    backgroundColor: 'white',
   },
   formTitle: {
-    fontSize: 20,
+    fontSize: 21,
     fontWeight: '700',
     marginBottom: 8,
-    color: '#1e293b',
     textAlign: 'center',
   },
   divider: {
     marginBottom: 20,
-    backgroundColor: '#e2e8f0',
     height: 1,
   },
   inputContainer: {
-    marginBottom: 16,
+    marginBottom: 18,
   },
   inputLabel: {
     fontSize: 13,
-    color: '#64748b',
     marginBottom: 6,
     fontWeight: '600',
     textTransform: 'uppercase',
@@ -509,31 +441,25 @@ const styles = StyleSheet.create({
   },
   nativeInput: {
     borderWidth: 1,
-    borderColor: '#e2e8f0',
     borderRadius: 10,
-    padding: 12,
-    fontSize: 15,
-    backgroundColor: '#f8fafc',
-    color: '#1e293b',
+    padding: 13,
+    fontSize: 16,
   },
   inputWithIcon: {
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#e2e8f0',
     borderRadius: 10,
-    backgroundColor: '#f8fafc',
   },
   inputIcon: {
     paddingHorizontal: 12,
   },
   multilineInput: {
-    height: 90,
+    height: 96,
     textAlignVertical: 'top',
   },
   inputWithIconField: {
     flex: 1,
-    borderWidth: 0,
     padding: 10,
   },
   chipContainer: {
@@ -543,27 +469,23 @@ const styles = StyleSheet.create({
   },
   chip: {
     margin: 4,
-    backgroundColor: '#DDEEED',
-  },
-  chipText: {
-    color: '#075454',
   },
   submitButton: {
     marginTop: 12,
-    paddingVertical: 4,
     backgroundColor: '#0E7C78',
     borderRadius: 10,
   },
   buttonLabel: {
-    fontSize: 15,
+    fontSize: 16,
     color: 'white',
     fontWeight: '600',
-    paddingVertical: 2,
+  },
+  buttonContent: {
+    paddingVertical: 4,
   },
   successCard: {
     marginHorizontal: 16,
     marginTop: 16,
-    backgroundColor: '#ecfdf5',
     borderRadius: 8,
   },
   successContent: {
@@ -572,26 +494,23 @@ const styles = StyleSheet.create({
   },
   successText: {
     marginLeft: 8,
-    color: '#065f46',
     fontWeight: '500',
+    fontSize: 15,
   },
   tipContainer: {
     margin: 16,
     marginTop: 8,
-    padding: 12,
+    padding: 14,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#E8F5F4',
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#DDEEED',
   },
   tipText: {
     marginLeft: 8,
-    fontSize: 13,
-    color: '#075454',
+    fontSize: 14,
     flex: 1,
-    lineHeight: 18,
+    lineHeight: 20,
   },
   photoPreviewContainer: {
     marginBottom: 12,
@@ -603,14 +522,13 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 180,
     borderRadius: 8,
-    backgroundColor: '#e2e8f0',
   },
   removePhotoButton: {
     position: 'absolute',
     top: 8,
     right: 8,
     backgroundColor: 'white',
-    borderRadius: 12,
+    borderRadius: 13,
   },
   photoButtonsContainer: {
     flexDirection: 'row',
@@ -621,36 +539,27 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 16,
+    paddingVertical: 18,
     borderWidth: 1,
-    borderColor: '#e2e8f0',
     borderRadius: 10,
-    backgroundColor: '#f8fafc',
     borderStyle: 'dashed',
   },
   photoButtonText: {
     marginTop: 6,
-    fontSize: 13,
-    color: '#0E7C78',
+    fontSize: 14,
     fontWeight: '600',
   },
-  // Date picker styles
   datePickerText: {
     flex: 1,
-    fontSize: 15,
-    color: '#1e293b',
-    paddingVertical: 12,
+    fontSize: 16,
+    paddingVertical: 13,
     paddingHorizontal: 4,
-  },
-  datePickerPlaceholder: {
-    color: '#94a3b8',
   },
   dateModalBackdrop: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.4)',
   },
   dateModalContainer: {
-    backgroundColor: 'white',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingBottom: 30,
@@ -663,20 +572,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#e2e8f0',
   },
   dateModalTitle: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: '600',
-    color: '#1e293b',
   },
   dateModalCancel: {
     fontSize: 15,
-    color: '#64748b',
   },
   dateModalConfirm: {
     fontSize: 15,
-    color: '#0E7C78',
     fontWeight: '700',
   },
   datePickerColumns: {
@@ -691,7 +596,6 @@ const styles = StyleSheet.create({
   datePickerColumnLabel: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#94a3b8',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
     paddingVertical: 8,
@@ -700,22 +604,14 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   datePickerItem: {
-    paddingVertical: 10,
+    paddingVertical: 11,
     paddingHorizontal: 8,
     borderRadius: 8,
     marginVertical: 2,
     marginHorizontal: 4,
     alignItems: 'center',
   },
-  datePickerItemSelected: {
-    backgroundColor: '#DDEEED',
-  },
   datePickerItemText: {
     fontSize: 15,
-    color: '#374151',
-  },
-  datePickerItemTextSelected: {
-    color: '#075454',
-    fontWeight: '700',
   },
 });
