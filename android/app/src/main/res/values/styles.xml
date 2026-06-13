@@ -4,16 +4,14 @@
     <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>
-        
-        <!-- Configurações para edge-to-edge no Android 15 -->
-        <item name="android:windowTranslucentStatus">false</item>
-        <item name="android:windowTranslucentNavigation">false</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:windowLightNavigationBar">true</item>
-        <item name="android:enforceStatusBarContrast">false</item>
-        <item name="android:enforceNavigationBarContrast">false</item>
+
+        <!--
+          Edge-to-edge é habilitado em tempo de execução via enableEdgeToEdge()
+          na MainActivity. As cores/aparência das barras de status e navegação
+          são controladas pelo componente <StatusBar> do React Native.
+          Os atributos statusBarColor / navigationBarColor / windowTranslucentStatus
+          foram removidos por serem descontinuados no Android 15 (SDK 35).
+        -->
     </style>
 
 </resources>

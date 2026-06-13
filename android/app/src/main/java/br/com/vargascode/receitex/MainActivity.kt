@@ -1,7 +1,7 @@
 package br.com.vargascode.receitex
 
 import android.os.Bundle
-import androidx.core.view.WindowCompat
+import androidx.activity.enableEdgeToEdge
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnabled
@@ -10,9 +10,12 @@ import com.facebook.react.defaults.DefaultReactActivityDelegate
 class MainActivity : ReactActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
+    // Habilita edge-to-edge usando a API recomendada do AndroidX. Substitui
+    // setDecorFitsSystemWindows() e os atributos de tema (statusBarColor,
+    // navigationBarColor, windowTranslucentStatus...) que foram descontinuados
+    // no Android 15 / SDK 35. Deve ser chamado antes de super.onCreate().
+    enableEdgeToEdge()
     super.onCreate(savedInstanceState)
-    // Habilita edge-to-edge para compatibilidade com Android 15 e SDK 35
-    WindowCompat.setDecorFitsSystemWindows(window, false)
   }
 
   /**
