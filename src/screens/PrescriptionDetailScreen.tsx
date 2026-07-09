@@ -42,10 +42,15 @@ const buildPDFHtml = (prescription: {
   symptomDescription: string;
   symptomCategories: string[];
   createdAt: string;
+  updatedAt?: string;
 }) => {
   const categories = prescription.symptomCategories
-    .map(c => `<span style="background:#DDEEED;color:#075454;padding:2px 8px;border-radius:4px;margin-right:6px;font-size:13px;">${c}</span>`)
+    .map(c => `<span style="background:#DDEEED;color:#075454;padding:3px 10px;border-radius:12px;margin-right:6px;margin-bottom:4px;font-size:13px;display:inline-block;">${c}</span>`)
     .join('');
+  const createdDate = new Date(prescription.createdAt).toLocaleDateString('pt-BR');
+  const updatedDate = prescription.updatedAt && prescription.updatedAt !== prescription.createdAt
+    ? new Date(prescription.updatedAt).toLocaleDateString('pt-BR')
+    : null;
   return `
 <!DOCTYPE html>
 <html>
@@ -53,26 +58,38 @@ const buildPDFHtml = (prescription: {
   <meta charset="UTF-8"/>
   <style>
     body { font-family: Arial, sans-serif; margin: 32px; color: #1e293b; }
-    h1 { color: #0E7C78; font-size: 22px; border-bottom: 2px solid #0E7C78; padding-bottom: 8px; }
+    .header { display: flex; align-items: center; margin-bottom: 8px; }
+    h1 { color: #0E7C78; font-size: 22px; margin: 0; }
+    .subtitle { font-size: 13px; color: #64748b; margin-bottom: 16px; }
+    hr { border: none; border-top: 2px solid #0E7C78; margin-bottom: 20px; }
     .label { font-size: 11px; font-weight: bold; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 16px; }
     .value { font-size: 16px; color: #1e293b; margin-top: 4px; }
-    .categories { margin-top: 4px; }
-    footer { margin-top: 48px; font-size: 11px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 12px; }
+    .categories { margin-top: 6px; }
+    .divider { border: none; border-top: 1px solid #e2e8f0; margin: 20px 0; }
+    footer { margin-top: 40px; font-size: 11px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 12px; display: flex; justify-content: space-between; }
   </style>
 </head>
 <body>
-  <h1>🏥 Receita Médica</h1>
-  <div class="label">Médico</div>
+  <div class="header">
+    <h1>&#127973; Receita M&eacute;dica</h1>
+  </div>
+  <div class="subtitle">Exportado pelo app Receitex</div>
+  <hr/>
+  <div class="label">M&eacute;dico</div>
   <div class="value">Dr(a). ${prescription.doctorName}</div>
   <div class="label">Paciente</div>
   <div class="value">${prescription.patientName}</div>
   <div class="label">Data da Consulta</div>
-  <div class="value">${prescription.appointmentDate}</div>
+  <div class="value">${prescription.appointmentDate || '—'}</div>
+  <hr class="divider"/>
   <div class="label">Sintomas</div>
   <div class="value">${prescription.symptomDescription || '—'}</div>
   <div class="label">Categorias</div>
-  <div class="categories">${categories || '—'}</div>
-  <footer>Exportado pelo app Receitex em ${new Date(prescription.createdAt).toLocaleDateString('pt-BR')}</footer>
+  <div class="categories">${categories || '<span style="color:#94a3b8;font-size:14px;">Não informadas</span>'}</div>
+  <footer>
+    <span>Criado em: ${createdDate}</span>
+    ${updatedDate ? `<span>Atualizado em: ${updatedDate}</span>` : ''}
+  </footer>
 </body>
 </html>`;
 };
@@ -140,7 +157,7 @@ export default function PrescriptionDetailScreen() {
       const html = buildPDFHtml(prescription);
       const file = await RNHTMLtoPDF.convert({
         html,
-        fileName: `receita_${prescription.id}`,
+        fileName: `receita_${prescription.id}_${new Date().toISOString().slice(0, 10)}`,
         directory: Platform.OS === 'ios' ? 'Documents' : 'Download',
       });
       if (file.filePath) {
@@ -278,10 +295,14 @@ export default function PrescriptionDetailScreen() {
           </View>
         </TouchableOpacity>
       ) : (
-        <View style={[styles.noPhotoContainer, { backgroundColor: colors.surfaceVariant }]}>
-          <MaterialCommunityIcons name="image-outline" size={32} color={colors.iconMuted} />
-          <Text style={[styles.noPhotoText, { color: colors.textTertiary }]}>Nenhuma foto anexada</Text>
-        </View>
+        <TouchableOpacity
+          style={[styles.noPhotoContainer, { backgroundColor: colors.surfaceVariant }]}
+          activeOpacity={0.7}
+          onPress={handleEdit}
+        >
+          <MaterialCommunityIcons name="camera-plus-outline" size={28} color={colors.primary} />
+          <Text style={[styles.noPhotoText, { color: colors.primary }]}>Toque para adicionar foto</Text>
+        </TouchableOpacity>
       )}
 
       {/* Full-screen image modal */}

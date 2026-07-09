@@ -136,6 +136,10 @@ export default function ReportsScreen() {
     const oldest = sortedByDate.length > 0 ? sortedByDate[sortedByDate.length - 1] : null;
     const newest = sortedByDate.length > 0 ? sortedByDate[0] : null;
 
+    const last30Days = prescriptions.filter(
+      p => Date.now() - new Date(p.createdAt).getTime() <= 30 * 86400000
+    ).length;
+
     return {
       total,
       uniqueDoctors,
@@ -148,6 +152,7 @@ export default function ReportsScreen() {
       recentPrescriptions,
       oldest,
       newest,
+      last30Days,
     };
   }, [prescriptions]);
 
@@ -233,6 +238,17 @@ export default function ReportsScreen() {
             <Text style={[styles.statValue, { color: colors.text }]}>{stats.uniqueCategories}</Text>
             <Text style={[styles.statLabel, { color: colors.textSecondary }]}>Categorias</Text>
           </View>
+        </View>
+
+        <View style={[styles.insightRow, { borderTopColor: colors.border }]}>
+          <MaterialCommunityIcons name="calendar-clock" size={16} color={colors.primary} />
+          <Text style={[styles.insightText, { color: colors.textSecondary }]}>
+            {stats.last30Days === 0
+              ? 'Nenhuma receita registrada nos últimos 30 dias'
+              : stats.last30Days === 1
+                ? '1 receita registrada nos últimos 30 dias'
+                : `${stats.last30Days} receitas registradas nos últimos 30 dias`}
+          </Text>
         </View>
       </Surface>
 
@@ -435,6 +451,17 @@ const styles = StyleSheet.create({
   statLabel: {
     fontSize: 12,
     marginTop: 2,
+  },
+  insightRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderTopWidth: 1,
+  },
+  insightText: {
+    fontSize: 13,
   },
   // Bar chart
   chartContainer: {

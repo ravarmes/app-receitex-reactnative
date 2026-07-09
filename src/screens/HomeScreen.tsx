@@ -29,6 +29,21 @@ export default function HomeScreen() {
   const uniqueDoctors = prescriptions ? new Set(prescriptions.map(p => p.doctorName)).size : 0;
   const uniquePatients = prescriptions ? new Set(prescriptions.map(p => p.patientName)).size : 0;
 
+  const greeting = useMemo(() => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Bom dia!';
+    if (hour < 18) return 'Boa tarde!';
+    return 'Boa noite!';
+  }, []);
+
+  const relativeTime = (iso: string) => {
+    const days = Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
+    if (days <= 0) return 'hoje';
+    if (days === 1) return 'ontem';
+    if (days < 30) return `há ${days} dias`;
+    const months = Math.floor(days / 30);
+    return months === 1 ? 'há 1 mês' : `há ${months} meses`;
+  };
   const FeatureCard = ({ title, icon, description, onPress }: FeatureCardProps) => (
     <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
       <Surface style={[styles.featureCard, { backgroundColor: colors.surface }]} elevation={1}>
@@ -64,7 +79,7 @@ export default function HomeScreen() {
         </View>
         <Text style={styles.headerTitle}>Suas receitas, organizadas</Text>
         <Text style={styles.headerSubtitle}>
-          Acompanhe medicamentos, médicos e consultas em um só lugar.
+          {greeting} Acompanhe medicamentos, médicos e consultas em um só lugar.
         </Text>
       </Surface>
 
@@ -98,7 +113,12 @@ export default function HomeScreen() {
             <Card.Content>
               <View style={styles.latestHeader}>
                 <Text style={[styles.latestLabel, { color: colors.primary }]}>Última receita</Text>
-                <MaterialCommunityIcons name="chevron-right" size={18} color={colors.primary} />
+                <View style={styles.latestHeaderRight}>
+                  <Text style={[styles.latestWhen, { color: colors.textTertiary }]}>
+                    {relativeTime(latestPrescription.createdAt)}
+                  </Text>
+                  <MaterialCommunityIcons name="chevron-right" size={18} color={colors.primary} />
+                </View>
               </View>
               <Text style={[styles.latestDoctor, { color: colors.text }]}>Dr(a). {latestPrescription.doctorName}</Text>
               <Text style={[styles.latestPatient, { color: colors.textSecondary }]}>
@@ -135,7 +155,7 @@ export default function HomeScreen() {
       <FeatureCard
         title="Ver receitas salvas"
         icon="prescription"
-        description="Acesse suas receitas armazenadas"
+        description={totalPrescriptions > 0 ? `${totalPrescriptions} receita${totalPrescriptions !== 1 ? 's' : ''} armazenada${totalPrescriptions !== 1 ? 's' : ''}` : 'Acesse suas receitas armazenadas'}
         onPress={() => navigation.navigate('Receitas')}
       />
 
@@ -147,7 +167,7 @@ export default function HomeScreen() {
       />
 
       <View style={styles.footer}>
-        <Text style={[styles.footerText, { color: colors.textTertiary }]}>Receitex v1.1.0</Text>
+        <Text style={[styles.footerText, { color: colors.textTertiary }]}>Receitex v1.0.11</Text>
       </View>
     </ScrollView>
   );
@@ -248,6 +268,14 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
+  },
+  latestHeaderRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  latestWhen: {
+    fontSize: 12,
   },
   latestDoctor: {
     fontSize: 17,

@@ -327,6 +327,21 @@ export default function PrescriptionsListScreen() {
             </Text>
           ) : null}
 
+          {!isExpanded && prescription.symptomCategories.length > 0 && (
+            <View style={styles.categoryBadgeRow}>
+              {prescription.symptomCategories.slice(0, 2).map((cat, idx) => (
+                <View key={idx} style={[styles.categoryBadge, { backgroundColor: colors.chipBg }]}>
+                  <Text style={[styles.categoryBadgeText, { color: colors.chipText }]}>{cat}</Text>
+                </View>
+              ))}
+              {prescription.symptomCategories.length > 2 && (
+                <View style={[styles.categoryBadge, { backgroundColor: colors.primaryBg }]}>
+                  <Text style={[styles.categoryBadgeText, { color: colors.primary }]}>+{prescription.symptomCategories.length - 2}</Text>
+                </View>
+              )}
+            </View>
+          )}
+
           {isExpanded && (
             <>
               <Divider style={[styles.divider, { backgroundColor: colors.border }]} />
@@ -362,7 +377,7 @@ export default function PrescriptionsListScreen() {
               e.stopPropagation();
               Alert.alert(
                 'Confirmar exclusão',
-                'Tem certeza que deseja excluir esta receita?',
+                `Excluir a receita de Dr(a). ${prescription.doctorName} para ${prescription.patientName}?`,
                 [
                   { text: 'Cancelar', style: 'cancel' },
                   {
@@ -378,7 +393,8 @@ export default function PrescriptionsListScreen() {
             <MaterialCommunityIcons name="delete-outline" size={26} color={colors.iconSecondary} />
           </TouchableOpacity>
 
-          <View style={styles.expandIndicator}>
+          <View style={styles.expandIndicatorRow}>
+            <Text style={[styles.longPressHint, { color: colors.textTertiary }]}>segure para expandir</Text>
             <MaterialCommunityIcons
               name={isExpanded ? 'chevron-up' : 'chevron-down'}
               size={26}
@@ -410,11 +426,35 @@ export default function PrescriptionsListScreen() {
           ) : null
         }
         ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            <MaterialCommunityIcons name="prescription" size={64} color={colors.iconMuted} />
-            <Text style={[styles.emptyText, { color: colors.textSecondary }]}>Nenhuma receita encontrada</Text>
-            <Text style={[styles.emptySubText, { color: colors.textTertiary }]}>Experimente outros termos de busca ou filtros</Text>
-          </View>
+          prescriptions.length === 0 ? (
+            <View style={styles.emptyContainer}>
+              <MaterialCommunityIcons name="prescription" size={64} color={colors.iconMuted} />
+              <Text style={[styles.emptyText, { color: colors.textSecondary }]}>Nenhuma receita cadastrada</Text>
+              <Text style={[styles.emptySubText, { color: colors.textTertiary }]}>Adicione sua primeira receita para começar a organizá-las.</Text>
+              <TouchableOpacity
+                style={[styles.emptyActionButton, { backgroundColor: colors.primary }]}
+                onPress={() => navigation.navigate('Adicionar')}
+              >
+                <MaterialCommunityIcons name="plus" size={18} color="white" />
+                <Text style={styles.emptyActionText}>Adicionar receita</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View style={styles.emptyContainer}>
+              <MaterialCommunityIcons name="magnify-close" size={64} color={colors.iconMuted} />
+              <Text style={[styles.emptyText, { color: colors.textSecondary }]}>Nenhuma receita encontrada</Text>
+              <Text style={[styles.emptySubText, { color: colors.textTertiary }]}>Experimente outros termos de busca ou filtros</Text>
+              {(hasActiveFilters || !!searchQuery) && (
+                <TouchableOpacity
+                  style={[styles.emptyActionButton, { backgroundColor: colors.primaryBg }]}
+                  onPress={clearAllFilters}
+                >
+                  <MaterialCommunityIcons name="filter-remove-outline" size={18} color={colors.primary} />
+                  <Text style={[styles.emptyActionText, { color: colors.primary }]}>Limpar busca e filtros</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          )
         }
       />
     </View>
@@ -592,5 +632,45 @@ const styles = StyleSheet.create({
     marginTop: 6,
     textAlign: 'center',
     lineHeight: 21,
+  },
+  emptyActionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginTop: 20,
+    paddingHorizontal: 18,
+    paddingVertical: 11,
+    borderRadius: 10,
+  },
+  emptyActionText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 14,
+  },
+  categoryBadgeRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 8,
+    gap: 4,
+  },
+  categoryBadge: {
+    borderRadius: 10,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+  },
+  categoryBadgeText: {
+    fontSize: 11,
+    fontWeight: '600',
+  },
+  expandIndicatorRow: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    gap: 4,
+  },
+  longPressHint: {
+    fontSize: 10,
+    fontStyle: 'italic',
   },
 });

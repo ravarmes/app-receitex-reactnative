@@ -1,0 +1,10 @@
+Novidades desta versão (1.0.10):
+
+• Saudação personalizada: o cabeçalho exibe "Bom dia!", "Boa tarde!" ou "Boa noite!" conforme o horário
+• Contador de receitas: o atalho "Ver receitas salvas" mostra a quantidade de receitas armazenadas
+• Categorias visíveis na lista: as categorias de sintomas aparecem como badges compactos nas cards
+• Dica de interação: hint "segure para expandir" nas cards da lista de receitas
+• Exclusão com contexto: a confirmação de exclusão exibe o nome do médico e do paciente
+• Foto clicável: ao abrir uma receita sem foto, toque na área para ir direto à edição
+• PDF aprimorado: template com divisores, categorias com bordas arredondadas e data de atualização incluída
+• Nome do arquivo PDF inclui a data de exportação para facilitar organização

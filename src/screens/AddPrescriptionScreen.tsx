@@ -395,6 +395,12 @@ export default function AddPrescriptionScreen() {
           >
             {isEditing ? 'Atualizar Receita' : 'Salvar receita'}
           </Button>
+
+          {(!doctorName.trim() || !patientName.trim()) && (
+            <Text style={[styles.requiredHint, { color: colors.textTertiary }]}>
+              Preencha médico e paciente para salvar
+            </Text>
+          )}
         </Surface>
 
         {!isEditing && (
@@ -482,6 +488,11 @@ const styles = StyleSheet.create({
   },
   buttonContent: {
     paddingVertical: 4,
+  },
+  requiredHint: {
+    textAlign: 'center',
+    fontSize: 12,
+    marginTop: 10,
   },
   successCard: {
     marginHorizontal: 16,
