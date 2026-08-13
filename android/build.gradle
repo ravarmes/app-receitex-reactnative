@@ -2,8 +2,8 @@ buildscript {
     ext {
         buildToolsVersion = "35.0.0"
         minSdkVersion = 24
-        compileSdkVersion = 35
-        targetSdkVersion = 35
+        compileSdkVersion = 36
+        targetSdkVersion = 36
         // NDK 27+ alinha as bibliotecas nativas compiladas do projeto (ex.: librnscreens.so)
         // em páginas de 16 KB por padrão, exigido para apps que rodam em dispositivos
         // Android 15 com tamanho de página de 16 KB. NDK 26 ignorava a flag de página
