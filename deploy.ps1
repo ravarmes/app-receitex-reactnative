@@ -1,4 +1,4 @@
-# deploy.ps1 - Quiz da Fe build & deploy helper
+# deploy.ps1 - Receitex build & deploy helper
 #
 # Uso:
 #   .\deploy.ps1              - instala no emulador E gera AAB (padrao)
@@ -12,7 +12,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $AndroidDir = "$PSScriptRoot\android"
-$Package    = 'br.com.vargascode.quizdafe'
+$Package    = 'br.com.vargascode.receitex'
 
 function Test-DeviceConnected {
     $devices = adb devices 2>&1 | Select-String -Pattern '(emulator|device)$'

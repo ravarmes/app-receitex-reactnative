@@ -4,12 +4,12 @@
 
 import React, { useEffect, useState } from 'react';
 import {
-  SafeAreaView,
   StatusBar,
   StyleSheet,
   View,
   TouchableOpacity,
 } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import mobileAds, {
   BannerAd,
   BannerAdSize,
@@ -72,8 +72,11 @@ function ThemedApp(): React.JSX.Element {
   );
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.headerBg }]}>
-      <StatusBar barStyle="light-content" backgroundColor={colors.statusBar} />
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: colors.headerBg }]}
+      edges={['top', 'bottom', 'left', 'right']}
+    >
+      <StatusBar barStyle="light-content" translucent={true} backgroundColor="transparent" />
 
       <PaperProvider theme={paperTheme}>
         <PrescriptionProvider>
@@ -139,9 +142,11 @@ function ThemedApp(): React.JSX.Element {
 
 function App(): React.JSX.Element {
   return (
-    <ThemeProvider>
-      <ThemedApp />
-    </ThemeProvider>
+    <SafeAreaProvider>
+      <ThemeProvider>
+        <ThemedApp />
+      </ThemeProvider>
+    </SafeAreaProvider>
   );
 }
 

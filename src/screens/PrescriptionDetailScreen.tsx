@@ -314,7 +314,7 @@ export default function PrescriptionDetailScreen() {
         statusBarTranslucent={true}
       >
         <View style={styles.modalOverlay}>
-          <StatusBar backgroundColor="rgba(0,0,0,0.95)" barStyle="light-content" />
+          <StatusBar backgroundColor="transparent" barStyle="light-content" translucent={true} />
           <TouchableOpacity style={styles.modalCloseButton} onPress={() => setImageModalVisible(false)}>
             <MaterialCommunityIcons name="close" size={28} color="white" />
           </TouchableOpacity>
